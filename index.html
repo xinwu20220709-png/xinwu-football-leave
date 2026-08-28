@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新屋足球俱樂部 - 請假與補課系統</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 16px;
+      color: #1e293b;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    h2 {
+      color: #4f46e5;
+      text-align: center;
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #64748b;
+      font-size: 15px;
+    }
+
+    .tab.active {
+      color: #4f46e5;
+      border-bottom: 3px solid #4f46e5;
+      margin-bottom: -2px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #475569;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    button:hover {
+      background: #4338ca;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .notice {
+      background: #eef2ff;
+      border-left: 4px solid #4f46e5;
+      padding: 12px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      border-radius: 4px;
+      color: #3730a3;
+      line-height: 1.5;
+    }
+
+    .history-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .error-box {
+      background: #fef2f2;
+      border-left: 4px solid #ef4444;
+      padding: 12px;
+      font-size: 13px;
+      margin-top: 12px;
+      border-radius: 4px;
+      color: #991b1b;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .line-id-box {
+      margin-top: 12px;
+      padding: 10px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 12px;
+      word-break: break-all;
+      color: #475569;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>⚽ 新屋足球俱樂部</h2>
+
+    <div id="loading" style="text-align:center; padding:30px; color:#64748b;">
+      載入中，正在確認您的 LINE 身分...
+    </div>
+
+    <!-- 第一次綁定區塊 -->
+    <div id="bind-section" class="hidden">
+      <div class="notice">
+        您好！這是您第一次使用本系統。為了方便您之後直接點開就能使用，
+        請先簡單綁定學員資料（只需要設定一次）。
+      </div>
+
+      <div class="form-group">
+        <label>學員姓名</label>
+        <input type="text" id="bind-student" placeholder="例如：王小明">
+      </div>
+
+      <div class="form-group">
+        <label>您與學員的關係</label>
+        <select id="bind-relation">
+          <option value="爸爸">爸爸</option>
+          <option value="媽媽">媽媽</option>
+          <option value="阿公">阿公</option>
+          <option value="阿嬤">阿嬤</option>
+          <option value="叔叔/姑姑/其他">叔叔 / 姑姑 / 其他親屬</option>
+        </select>
+      </div>
+
+      <button onclick="handleBind()">完成綁定並進入</button>
+    </div>
+
+    <!-- 主系統介面 -->
+    <div id="main-section" class="hidden">
+      <div class="notice" id="user-info-text"></div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('leave')">請假申請</div>
+        <div class="tab" onclick="switchTab('makeup')">預約補課</div>
+      </div>
+
+      <div class="form-group">
+        <label>選擇學員</label>
+        <select id="student-select" onchange="onStudentChange()"></select>
+      </div>
+
+      <!-- 請假表單 -->
+      <div id="leave-form-pane">
+        <div class="form-group">
+          <label>請假日期</label>
+          <input type="date" id="leave-date">
+        </div>
+
+        <div class="form-group">
+          <label>請假原因 / 備註</label>
+          <textarea id="leave-remark" rows="2" placeholder="若有特殊狀況請在此說明"></textarea>
+        </div>
+
+        <button onclick="submitLeave()">送出請假申請</button>
+      </div>
+
+      <!-- 補課表單 -->
+      <div id="makeup-form-pane" class="hidden">
+        <div class="form-group">
+          <label>📌 選擇要抵扣的原請假日期 (對應缺課)</label>
+          <select id="makeup-original-date">
+            <option value="">-- 請先選擇請假紀錄 --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>預約補課日期</label>
+          <input type="date" id="makeup-date">
+        </div>
+
+        <div class="form-group">
+          <label>選擇補課時段</label>
+          <select id="makeup-slot-select" onchange="handleSlotChange()">
+            <option value="">-- 請選擇補課時段 --</option>
+            <option value="團體班2">團體班2</option>
+            <option value="團體班3">團體班3</option>
+            <option value="團體班4">團體班4</option>
+            <option value="團體班6">團體班6</option>
+            <option value="其他">其他 (自行填寫)</option>
+          </select>
+        </div>
+
+        <div class="form-group hidden" id="makeup-other-group">
+          <label>請輸入其他補課時段 / 備註</label>
+          <input type="text" id="makeup-other-input" placeholder="例如：一對一特訓班">
+        </div>
+
+        <button onclick="submitMakeup()" style="background:#0ea5e9;">
+          送出補課預約
+        </button>
+      </div>
+
+      <!-- 歷史紀錄 -->
+      <div style="margin-top:24px;">
+        <hr style="margin:20px 0;border:0;border-top:1px solid #e2e8f0;">
+
+        <h3
+          style="font-size:15px;color:#334155;margin-bottom:10px;"
+          id="history-title">
+          📋 近期請假紀錄
+        </h3>
+
+        <div id="history-list">尚無紀錄</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // LINE ID Token 只保留在目前頁面的記憶體中，不寫入 localStorage。
+    let lineIdToken = "";
+    let userLineId = "";
+    let userBindings = [];
+    let currentTab = "leave";
+
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwI-xz8i7TMTYGAj1bjqbkPipsKOyEAldlD0diAaP2zVTkCMRje3SrYZ2ofECywKBkw/exec";
+    const GAS_API_CHANNEL = "NEW屋_SOCCER_GAS_API";
+    const pendingApiRequests = new Map();
+
+    window.addEventListener("message", function(event) {
+      const message = event && event.data;
+      if (!message || message.channel !== GAS_API_CHANNEL) return;
+
+      const pending = pendingApiRequests.get(message.requestId);
+      if (!pending) return;
+      pendingApiRequests.delete(message.requestId);
+
+      if (pending.iframe && pending.iframe.parentNode) {
+        pending.iframe.parentNode.removeChild(pending.iframe);
+      }
+
+      if (message.response && message.response.ok) {
+        pending.resolve(message.response.data);
+      } else {
+        pending.reject(new Error(
+          message.response && message.response.error
+            ? message.response.error
+            : "GAS API 發生未知錯誤。"
+        ));
+      }
+    });
+
+    function callGasApi(action, payload) {
+      return new Promise(function(resolve, reject) {
+        const requestId =
+          "req_" + Date.now().toString(36) + "_" +
+          Math.random().toString(36).slice(2);
+
+        const iframe = document.createElement("iframe");
+        iframe.name = requestId;
+        iframe.style.display = "none";
+        iframe.setAttribute("aria-hidden", "true");
+        document.body.appendChild(iframe);
+
+        pendingApiRequests.set(requestId, { resolve, reject, iframe });
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = GAS_API_URL;
+        form.target = requestId;
+        form.style.display = "none";
+
+        const requestInput = document.createElement("input");
+        requestInput.type = "hidden";
+        requestInput.name = "requestId";
+        requestInput.value = requestId;
+
+        const payloadInput = document.createElement("input");
+        payloadInput.type = "hidden";
+        payloadInput.name = "payload";
+        payloadInput.value = JSON.stringify(Object.assign({}, payload || {}, { action }));
+
+        form.appendChild(requestInput);
+        form.appendChild(payloadInput);
+        document.body.appendChild(form);
+        form.submit();
+        form.remove();
+
+        setTimeout(function() {
+          const pending = pendingApiRequests.get(requestId);
+          if (!pending) return;
+          pendingApiRequests.delete(requestId);
+          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+          reject(new Error("伺服器回應逾時，請確認 GAS Web App 已重新部署。"));
+        }, 30000);
+      });
+    }
+
+    // ==========================================================
+    // 頁面載入
+    // ==========================================================
+    window.addEventListener("load", initSystem);
+
+    async function initSystem() {
+      const loading = document.getElementById("loading");
+      try {
+        if (typeof liff === "undefined") throw new Error("LIFF SDK 尚未載入。");
+        loading.innerHTML = "正在初始化 LINE 身分...";
+
+        await liff.init({
+          liffId: "2011307172-d3esgseq",
+          withLoginOnExternalBrowser: true
+        });
+
+        console.log("LIFF 初始化成功", liff.getVersion(), liff.isInClient(), liff.isLoggedIn());
+
+        if (!liff.isLoggedIn()) {
+          throw new Error("LINE 登入尚未完成。請重新從 LINE 開啟系統。");
+        }
+
+        loading.innerHTML = "正在取得 LINE 身分驗證資訊...";
+        const idToken = liff.getIDToken();
+        if (!idToken) {
+          throw new Error("無法取得 LINE ID Token。請確認 LIFF Scope 已開啟 openid。");
+        }
+        lineIdToken = String(idToken);
+
+        loading.innerHTML = "正在驗證 LINE 身分...";
+        const verifiedUser = await callGasApi("verifyLineIdToken", { idToken: lineIdToken });
+        if (!verifiedUser || !verifiedUser.userId) {
+          throw new Error("伺服器沒有回傳有效的 LINE User ID。");
+        }
+
+        userLineId = String(verifiedUser.userId).trim();
+        console.log("LINE User ID 已由 LINE Platform 驗證取得", userLineId);
+
+        loading.innerHTML = "正在確認您的會員資料...";
+        const bindings = await callGasApi("checkLineId", { idToken: lineIdToken });
+        onCheckBindResult(bindings);
+      } catch (err) {
+        console.error("LIFF / API ERROR:", err);
+        showError("LINE 身分確認失敗", err && err.message ? err.message : err);
+      }
+    }
+
+    // ==========================================================
+    // 顯示錯誤
+    // ==========================================================
+    function showError(title, message) {
+      const loading = document.getElementById("loading");
+
+      loading.innerHTML =
+        "<div class='error-box'>" +
+        "<b>❌ " + escapeHtml(title) + "</b><br><br>" +
+        escapeHtml(String(message)) +
+        "</div>";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // ==========================================================
+    // Google Apps Script 伺服器錯誤
+    // ==========================================================
+    function onServerFail(err) {
+      console.error("Server Error:", err);
+
+      showError(
+        "伺服器連線發生錯誤",
+        err && err.message ? err.message : err
+      );
+    }
+
+    // ==========================================================
+    // 綁定家長 / 學員
+    // ==========================================================
+    function handleBind() {
+      const studentName =
+        document.getElementById("bind-student").value.trim();
+
+      const relation =
+        document.getElementById("bind-relation").value;
+
+      if (!lineIdToken || !userLineId) {
+        alert("目前尚未取得 LINE 身分，請重新從 LINE 開啟系統。");
+        return;
+      }
+
+      if (!studentName) {
+        alert("請輸入學員姓名！");
+        return;
+      }
+
+      callGasApi("registerUser", {
+        idToken: lineIdToken,
+        studentName: studentName,
+        relation: relation
+      }).then(function() {
+        alert("綁定成功！");
+        userBindings.push({ studentName: studentName, relation: relation });
+        document.getElementById("bind-section").classList.add("hidden");
+        showMainSection();
+      }).catch(function(err) {
+        alert("綁定失敗：" + (err && err.message ? err.message : err));
+      });
+    }
+
+    // ==========================================================
+    // 顯示主畫面
+    // ==========================================================
+    function showMainSection() {
+      document
+        .getElementById("main-section")
+        .classList.remove("hidden");
+
+      const select =
+        document.getElementById("student-select");
+
+      select.innerHTML = "";
+
+      userBindings.forEach(function(binding) {
+        const opt = document.createElement("option");
+
+        opt.value = binding.studentName;
+        opt.text =
+          binding.studentName +
+          " (" +
+          binding.relation +
+          ")";
+
+        select.appendChild(opt);
+      });
+
+      document.getElementById("user-info-text").innerText =
+        "👋 您好，系統已自動確認您的 LINE 身分。";
+
+      onStudentChange();
+    }
+
+    // ==========================================================
+    // 學員切換
+    // ==========================================================
+    function onStudentChange() {
+      loadHistory();
+
+      if (currentTab === "makeup") {
+        loadValidLeaveDates();
+      }
+    }
+
+    // ==========================================================
+    // 分頁
+    // ==========================================================
+    function switchTab(tab) {
+      currentTab = tab;
+
+      const tabs =
+        document.querySelectorAll(".tab");
+
+      tabs.forEach(function(tabElement) {
+        tabElement.classList.remove("active");
+      });
+
+      if (tab === "leave") {
+        tabs[0].classList.add("active");
+
+        document
+          .getElementById("leave-form-pane")
+          .classList.remove("hidden");
+
+        document
+          .getElementById("makeup-form-pane")
+          .classList.add("hidden");
+
+        document.getElementById("history-title").innerText =
+          "📋 近期請假紀錄";
+
+      } else {
+        tabs[1].classList.add("active");
+
+        document
+          .getElementById("makeup-form-pane")
+          .classList.remove("hidden");
+
+        document
+          .getElementById("leave-form-pane")
+          .classList.add("hidden");
+
+        document.getElementById("history-title").innerText =
+          "📋 近期預約補課紀錄";
+
+        loadValidLeaveDates();
+      }
+
+      loadHistory();
+    }
+
+    // ==========================================================
+    // 補課時段
+    // ==========================================================
+    function handleSlotChange() {
+      const slotSelect =
+        document.getElementById("makeup-slot-select").value;
+
+      const otherGroup =
+        document.getElementById("makeup-other-group");
+
+      if (slotSelect === "其他") {
+        otherGroup.classList.remove("hidden");
+      } else {
+        otherGroup.classList.add("hidden");
+
+        document.getElementById(
+          "makeup-other-input"
+        ).value = "";
+      }
+    }
+
+    // ==========================================================
+    // 載入歷史紀錄
+    // ==========================================================
+    function loadHistory() {
+      const select =
+        document.getElementById("student-select");
+
+      if (!select || !select.value) {
+        return;
+      }
+
+      const studentName = select.value;
+
+      const action = currentTab === "leave" ? "getLeaveHistory" : "getMakeupHistory";
+      callGasApi(action, { idToken: lineIdToken, studentName: studentName })
+        .then(renderHistory)
+        .catch(onServerFail);
+    }
+
+    // ==========================================================
+    // 顯示歷史紀錄
+    // ==========================================================
+    function renderHistory(history) {
+      const listDiv =
+        document.getElementById("history-list");
+
+      if (!history || history.length === 0) {
+        listDiv.innerHTML =
+          "<div style='color:#94a3b8;font-size:13px;text-align:center;padding:10px;'>" +
+          "目前沒有相關紀錄" +
+          "</div>";
+
+        return;
+      }
+
+      let html = "";
+
+      history.forEach(function(h) {
+        let info;
+
+        if (currentTab === "leave") {
+          info =
+            "原因：" +
+            escapeHtml(h.reason || "無");
+        } else {
+          info =
+            "原請假日期：" +
+            escapeHtml(h.originalDate || "未指定") +
+            " | 備註：" +
+            escapeHtml(h.remark || "");
+        }
+
+        html +=
+          "<div class='history-card'>" +
+          "<b>日期：" +
+          escapeHtml(h.date || "") +
+          "</b> | 狀態：" +
+          "<span style='color:#4f46e5;'>" +
+          escapeHtml(h.status || "") +
+          "</span><br>" +
+          info +
+          "</div>";
+      });
+
+      listDiv.innerHTML = html;
+    }
+
+    // ==========================================================
+    // 載入可補課的請假日期
+    // ==========================================================
+    function loadValidLeaveDates() {
+      const studentName =
+        document.getElementById("student-select").value;
+
+      const selectOriginal =
+        document.getElementById("makeup-original-date");
+
+      selectOriginal.innerHTML =
+        "<option value=''>載入中...</option>";
+
+      if (!studentName) {
+        selectOriginal.innerHTML =
+          "<option value=''>-- 請先選擇學員 --</option>";
+
+        return;
+      }
+
+      callGasApi("getValidLeaveDates", {
+        idToken: lineIdToken,
+        studentName: studentName
+      }).then(function(leaves) {
+        selectOriginal.innerHTML = "";
+        if (!leaves || leaves.length === 0) {
+          selectOriginal.innerHTML = "<option value=''>⚠️ 該學員目前沒有可用的請假紀錄</option>";
+          return;
+        }
+        const defaultOpt = document.createElement("option");
+        defaultOpt.value = "";
+        defaultOpt.text = "-- 請選擇要補哪一天的缺 --";
+        selectOriginal.appendChild(defaultOpt);
+        leaves.forEach(function(leave) {
+          const opt = document.createElement("option");
+          opt.value = leave.date;
+          opt.text = "📅 原請假日期：" + leave.date + " (原因: " + (leave.reason || "無") + ")";
+          selectOriginal.appendChild(opt);
+        });
+      }).catch(onServerFail);
+    }
+
+    // ==========================================================
+    // 送出請假
+    // ==========================================================
+    function submitLeave() {
+      const studentName =
+        document.getElementById("student-select").value;
+
+      const date =
+        document.getElementById("leave-date").value;
+
+      const remark =
+        document.getElementById("leave-remark").value;
+
+      if (!lineIdToken || !userLineId) {
+        alert("尚未取得 LINE 身分，請重新開啟系統。");
+        return;
+      }
+
+      if (!date) {
+        alert("請選擇請假日期！");
+        return;
+      }
+
+      const binding =
+        userBindings.find(function(b) {
+          return b.studentName === studentName;
+        });
+
+      callGasApi("saveLeaveRecord", {
+        idToken: lineIdToken,
+        relation: binding ? binding.relation : "家長",
+        studentName: studentName,
+        date: date,
+        remark: remark
+      }).then(function() {
+        alert("請假申請已送出！");
+        document.getElementById("leave-date").value = "";
+        document.getElementById("leave-remark").value = "";
+        loadHistory();
+      }).catch(function(err) {
+        alert("送出失敗：" + (err && err.message ? err.message : err));
+      });
+    }
+
+    // ==========================================================
+    // 送出補課
+    // ==========================================================
+    function submitMakeup() {
+      const studentName =
+        document.getElementById("student-select").value;
+
+      const originalDate =
+        document.getElementById(
+          "makeup-original-date"
+        ).value;
+
+      const date =
+        document.getElementById("makeup-date").value;
+
+      const slotSelect =
+        document.getElementById(
+          "makeup-slot-select"
+        ).value;
+
+      const otherInput =
+        document.getElementById(
+          "makeup-other-input"
+        ).value.trim();
+
+      const remark =
+        slotSelect === "其他"
+          ? (otherInput
+              ? "其他：" + otherInput
+              : "其他")
+          : slotSelect;
+
+      if (!lineIdToken || !userLineId) {
+        alert("尚未取得 LINE 身分，請重新開啟系統。");
+        return;
+      }
+
+      if (!originalDate) {
+        alert("請選擇您要抵扣的原請假日期！");
+        return;
+      }
+
+      if (!date) {
+        alert("請選擇預約補課日期！");
+        return;
+      }
+
+      if (!slotSelect) {
+        alert("請選擇補課時段！");
+        return;
+      }
+
+      if (slotSelect === "其他" && !otherInput) {
+        alert("請填寫其他補課時段 / 備註！");
+        return;
+      }
+
+      const binding =
+        userBindings.find(function(b) {
+          return b.studentName === studentName;
+        });
+
+      callGasApi("saveMakeupRecord", {
+        idToken: lineIdToken,
+        relation: binding ? binding.relation : "家長",
+        studentName: studentName,
+        originalDate: originalDate,
+        date: date,
+        remark: remark
+      }).then(function() {
+        alert("補課預約已送出！");
+        document.getElementById("makeup-date").value = "";
+        document.getElementById("makeup-slot-select").value = "";
+        document.getElementById("makeup-other-input").value = "";
+        document.getElementById("makeup-other-group").classList.add("hidden");
+        loadValidLeaveDates();
+        loadHistory();
+      }).catch(function(err) {
+        alert("送出失敗：" + (err && err.message ? err.message : err));
+      });
+    }
+
+    // ==========================================================
+    // LINE ID 查詢結果
+    // ==========================================================
+    function onCheckBindResult(result) {
+      userBindings = Array.isArray(result)
+        ? result
+        : [];
+
+      document
+        .getElementById("loading")
+        .classList.add("hidden");
+
+      if (userBindings.length === 0) {
+        document
+          .getElementById("bind-section")
+          .classList.remove("hidden");
+      } else {
+        showMainSection();
+      }
+    }
+  </script>
+</body>
+</html>
