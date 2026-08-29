@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html>
 
@@ -13,57 +12,98 @@
 
   <style>
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        sans-serif;
+
       background-color: #f8fafc;
+
       margin: 0;
       padding: 16px;
+
       color: #1e293b;
     }
 
 
     .container {
       max-width: 500px;
+
       margin: 0 auto;
+
       background: white;
+
       padding: 24px;
+
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+
+      box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.06);
     }
 
 
     h2 {
       color: #4f46e5;
+
       text-align: center;
+
       margin-top: 0;
+
       font-size: 22px;
     }
 
 
+    /* ==========================================================
+       分頁
+    ========================================================== */
+
     .tabs {
       display: flex;
+
       margin-bottom: 20px;
-      border-bottom: 2px solid #e2e8f0;
+
+      border-bottom:
+        2px solid #e2e8f0;
     }
 
 
     .tab {
       flex: 1;
+
       text-align: center;
+
       padding: 10px;
+
       cursor: pointer;
+
       font-weight: bold;
+
       color: #64748b;
+
       font-size: 15px;
     }
 
 
     .tab.active {
       color: #4f46e5;
-      border-bottom: 3px solid #4f46e5;
+
+      border-bottom:
+        3px solid #4f46e5;
+
       margin-bottom: -2px;
     }
 
+
+    /* ==========================================================
+       表單
+    ========================================================== */
 
     .form-group {
       margin-bottom: 16px;
@@ -72,9 +112,13 @@
 
     label {
       display: block;
+
       font-weight: 600;
+
       margin-bottom: 6px;
+
       font-size: 14px;
+
       color: #475569;
     }
 
@@ -83,24 +127,44 @@
     select,
     textarea {
       width: 100%;
+
       padding: 10px 12px;
-      border: 1px solid #cbd5e1;
+
+      border:
+        1px solid #cbd5e1;
+
       border-radius: 8px;
-      box-sizing: border-box;
+
       font-size: 15px;
+
+      background: white;
+    }
+
+
+    textarea {
+      resize: vertical;
     }
 
 
     button {
       width: 100%;
+
       background: #4f46e5;
+
       color: white;
+
       border: none;
+
       padding: 12px;
+
       border-radius: 8px;
+
       font-size: 16px;
+
       font-weight: bold;
+
       cursor: pointer;
+
       margin-top: 8px;
     }
 
@@ -112,123 +176,239 @@
 
     button:disabled {
       opacity: 0.6;
+
       cursor: not-allowed;
     }
 
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
+
+    /* ==========================================================
+       提示
+    ========================================================== */
 
     .notice {
       background: #eef2ff;
-      border-left: 4px solid #4f46e5;
+
+      border-left:
+        4px solid #4f46e5;
+
       padding: 12px;
+
       font-size: 13px;
+
       margin-bottom: 16px;
+
       border-radius: 4px;
+
       color: #3730a3;
+
       line-height: 1.5;
     }
 
+
+    /* ==========================================================
+       成員區
+    ========================================================== */
+
+    .member-header {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      margin-bottom: 6px;
+    }
+
+
+    .member-header-left {
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+    }
+
+
+    .member-header-left label {
+      margin: 0;
+
+      font-size: 15px;
+
+      color: #334155;
+    }
+
+
+    .member-count {
+      color: #64748b;
+
+      font-size: 13px;
+
+      font-weight: normal;
+
+      white-space: nowrap;
+    }
+
+
+    /* 小型新增按鈕 */
+
+    .add-member-button {
+      width: auto;
+
+      margin: 0;
+
+      padding: 6px 12px;
+
+      border-radius: 7px;
+
+      background: #10b981;
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      white-space: nowrap;
+    }
+
+
+    .add-member-button:hover {
+      background: #059669;
+    }
+
+
+    /* ==========================================================
+       新增成員區塊
+    ========================================================== */
+
+    .add-member-box {
+      background: #f0fdf4;
+
+      border:
+        1px solid #bbf7d0;
+
+      border-radius: 10px;
+
+      padding: 14px;
+
+      margin-bottom: 18px;
+    }
+
+
+    .add-member-title {
+      font-size: 15px;
+
+      font-weight: bold;
+
+      color: #166534;
+
+      margin-bottom: 12px;
+    }
+
+
+    .add-member-actions {
+      display: flex;
+
+      gap: 8px;
+
+      margin-top: 4px;
+    }
+
+
+    .add-member-actions button {
+      flex: 1;
+
+      margin-top: 0;
+    }
+
+
+    .cancel-button {
+      background: #e2e8f0;
+
+      color: #475569;
+    }
+
+
+    .cancel-button:hover {
+      background: #cbd5e1;
+    }
+
+
+    .confirm-add-button {
+      background: #10b981;
+    }
+
+
+    .confirm-add-button:hover {
+      background: #059669;
+    }
+
+
+    /* ==========================================================
+       歷史紀錄
+    ========================================================== */
 
     .history-card {
       background: #f8fafc;
-      border: 1px solid #e2e8f0;
+
+      border:
+        1px solid #e2e8f0;
+
       padding: 12px;
+
       border-radius: 8px;
+
       margin-bottom: 8px;
+
       font-size: 13px;
     }
 
 
+    /* ==========================================================
+       錯誤
+    ========================================================== */
+
     .error-box {
       background: #fef2f2;
-      border-left: 4px solid #ef4444;
+
+      border-left:
+        4px solid #ef4444;
+
       padding: 12px;
+
       font-size: 13px;
+
       margin-top: 12px;
+
       border-radius: 4px;
+
       color: #991b1b;
+
       line-height: 1.5;
+
       word-break: break-word;
     }
 
 
     .line-id-box {
       margin-top: 12px;
+
       padding: 10px;
+
       background: #f1f5f9;
+
       border-radius: 8px;
+
       font-size: 12px;
+
       word-break: break-all;
+
       color: #475569;
-    }
-
-
-    /* ==========================================================
-       新增學員按鈕
-    ========================================================== */
-
-    .add-student-button {
-      background: #10b981;
-      margin-top: 10px;
-    }
-
-
-    .add-student-button:hover {
-      background: #059669;
-    }
-
-
-    /* ==========================================================
-       取消按鈕
-    ========================================================== */
-
-    .cancel-button {
-      background: #94a3b8;
-      margin-top: 8px;
-    }
-
-
-    .cancel-button:hover {
-      background: #64748b;
-    }
-
-
-    /* ==========================================================
-       綁定表單標題
-    ========================================================== */
-
-    .bind-title {
-      color: #334155;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 14px;
-    }
-
-
-    /* ==========================================================
-       學員區塊
-    ========================================================== */
-
-    .student-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-
-    .student-header label {
-      margin-bottom: 0;
-    }
-
-
-    .student-count {
-      font-size: 12px;
-      color: #64748b;
     }
 
   </style>
@@ -240,106 +420,111 @@
 
   <div class="container">
 
-    <h2>⚽ 新屋足球俱樂部</h2>
+
+    <!-- ========================================================
+         標題
+    ========================================================= -->
+
+    <h2>
+      ⚽ 新屋足球俱樂部
+    </h2>
 
 
-    <!-- ==========================================================
+    <!-- ========================================================
          載入中
-    =========================================================== -->
+    ========================================================= -->
 
     <div
       id="loading"
-      style="text-align:center; padding:30px; color:#64748b;"
+      style="
+        text-align:center;
+        padding:30px;
+        color:#64748b;
+      "
     >
       載入中，正在確認您的 LINE 身分...
     </div>
 
 
-    <!-- ==========================================================
-         綁定學員區塊
-         
-         第一次使用：
-         顯示第一位學員綁定
+    <!-- ========================================================
+         第一次綁定
+    ========================================================= -->
 
-         已經有學員：
-         點「新增學員」後再次使用這個區塊
-    =========================================================== -->
+    <div
+      id="bind-section"
+      class="hidden"
+    >
 
-    <div id="bind-section" class="hidden">
+      <div class="notice">
 
-      <div
-        class="bind-title"
-        id="bind-section-title"
-      >
-        👤 綁定學員
-      </div>
-
-
-      <div
-        class="notice"
-        id="bind-section-notice"
-      >
         您好！這是您第一次使用本系統。
-        請先綁定一位學員，之後即可直接使用請假與補課功能。
+
+        為了方便您之後直接點開就能使用，
+
+        請先簡單綁定學員資料。
+
       </div>
 
-
-      <!-- ========================================================
-           學員姓名
-      ========================================================= -->
 
       <div class="form-group">
 
-        <label>學員姓名</label>
+        <label>
+          學員姓名
+        </label>
 
         <input
           type="text"
           id="bind-student"
           placeholder="例如：王小明"
-          maxlength="30"
         >
 
       </div>
 
 
-      <!-- ========================================================
-           關係
-      ========================================================= -->
-
       <div class="form-group">
 
-        <label>您與學員的關係</label>
+        <label>
+          您與學員的關係
+        </label>
 
         <select
           id="bind-relation"
           onchange="handleRelationChange()"
         >
 
-          <option value="爸爸">爸爸</option>
+          <option value="爸爸">
+            爸爸
+          </option>
 
-          <option value="媽媽">媽媽</option>
+          <option value="媽媽">
+            媽媽
+          </option>
 
-          <option value="阿公">阿公</option>
+          <option value="阿公">
+            阿公
+          </option>
 
-          <option value="阿嬤">阿嬤</option>
+          <option value="阿嬤">
+            阿嬤
+          </option>
 
-          <option value="其他">其他（自行填寫）</option>
+          <option value="其他">
+            其他（自行填寫）
+          </option>
 
         </select>
 
       </div>
 
 
-      <!-- ========================================================
-           其他關係
-      ========================================================= -->
-
       <div
         class="form-group hidden"
         id="bind-other-relation-group"
       >
 
-        <label>請填寫您與學員的關係</label>
+        <label>
+          請填寫您與學員的關係
+        </label>
 
         <input
           type="text"
@@ -351,38 +536,22 @@
       </div>
 
 
-      <!-- ========================================================
-           儲存綁定
-      ========================================================= -->
-
-      <button
-        id="bind-submit-button"
-        onclick="handleBind()"
-      >
+      <button onclick="handleBind()">
         完成綁定並進入
-      </button>
-
-
-      <!-- ========================================================
-           取消新增
-      ========================================================= -->
-
-      <button
-        id="bind-cancel-button"
-        class="cancel-button hidden"
-        onclick="cancelAddStudent()"
-      >
-        取消新增
       </button>
 
     </div>
 
 
-    <!-- ==========================================================
-         主系統介面
-    =========================================================== -->
+    <!-- ========================================================
+         主系統
+    ========================================================= -->
 
-    <div id="main-section" class="hidden">
+    <div
+      id="main-section"
+      class="hidden"
+    >
+
 
       <div
         class="notice"
@@ -390,9 +559,9 @@
       ></div>
 
 
-      <!-- ========================================================
+      <!-- ======================================================
            分頁
-      ========================================================= -->
+      ======================================================= -->
 
       <div class="tabs">
 
@@ -402,7 +571,6 @@
         >
           請假申請
         </div>
-
 
         <div
           class="tab"
@@ -414,23 +582,44 @@
       </div>
 
 
-      <!-- ========================================================
-           選擇學員
-      ========================================================= -->
+      <!-- ======================================================
+           成員選擇
+      ======================================================= -->
 
       <div class="form-group">
 
-        <div class="student-header">
 
-          <label>選擇學員</label>
+        <!-- 標題 + 人數 + 新增 -->
+        <div class="member-header">
 
-          <span
-            class="student-count"
-            id="student-count"
-          ></span>
+          <div class="member-header-left">
+
+            <label>
+              選擇成員
+            </label>
+
+            <span
+              class="member-count"
+              id="member-count"
+            >
+              目前 0 位成員
+            </span>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="add-member-button"
+            onclick="showAddMember()"
+          >
+            ＋新增
+          </button>
 
         </div>
 
+
+        <!-- 成員下拉選單 -->
 
         <select
           id="student-select"
@@ -438,28 +627,128 @@
         ></select>
 
 
-        <!-- 新增學員 -->
+      </div>
 
-        <button
-          type="button"
-          class="add-student-button"
-          onclick="showAddStudentForm()"
+
+      <!-- ======================================================
+           新增成員
+      ======================================================= -->
+
+      <div
+        id="add-member-box"
+        class="add-member-box hidden"
+      >
+
+        <div class="add-member-title">
+          ＋ 新增成員
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            學員姓名
+          </label>
+
+          <input
+            type="text"
+            id="add-student"
+            placeholder="例如：王小明"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            您與學員的關係
+          </label>
+
+          <select
+            id="add-relation"
+            onchange="handleAddRelationChange()"
+          >
+
+            <option value="爸爸">
+              爸爸
+            </option>
+
+            <option value="媽媽">
+              媽媽
+            </option>
+
+            <option value="阿公">
+              阿公
+            </option>
+
+            <option value="阿嬤">
+              阿嬤
+            </option>
+
+            <option value="其他">
+              其他（自行填寫）
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div
+          class="form-group hidden"
+          id="add-other-relation-group"
         >
-          ＋ 新增學員
-        </button>
+
+          <label>
+            請填寫您與學員的關係
+          </label>
+
+          <input
+            type="text"
+            id="add-other-relation"
+            placeholder="例如：阿姨、叔叔、朋友、監護人"
+            maxlength="20"
+          >
+
+        </div>
+
+
+        <div class="add-member-actions">
+
+          <button
+            type="button"
+            class="cancel-button"
+            onclick="cancelAddMember()"
+          >
+            取消
+          </button>
+
+          <button
+            type="button"
+            class="confirm-add-button"
+            onclick="handleAddMember()"
+          >
+            確認新增
+          </button>
+
+        </div>
 
       </div>
 
 
-      <!-- ========================================================
+      <!-- ======================================================
            請假表單
-      ========================================================= -->
+      ======================================================= -->
 
       <div id="leave-form-pane">
 
+
         <div class="form-group">
 
-          <label>請假日期</label>
+          <label>
+            請假日期
+          </label>
 
           <input
             type="date"
@@ -471,7 +760,9 @@
 
         <div class="form-group">
 
-          <label>請假原因 / 備註</label>
+          <label>
+            請假原因 / 備註
+          </label>
 
           <textarea
             id="leave-remark"
@@ -489,23 +780,25 @@
       </div>
 
 
-      <!-- ========================================================
+      <!-- ======================================================
            補課表單
-      ========================================================= -->
+      ======================================================= -->
 
       <div
         id="makeup-form-pane"
         class="hidden"
       >
 
+
         <div class="form-group">
 
           <label>
-            📌 選擇要抵扣的原請假日期 (對應缺課)
+            📌 選擇要抵扣的原請假日期（對應缺課）
           </label>
 
-
-          <select id="makeup-original-date">
+          <select
+            id="makeup-original-date"
+          >
 
             <option value="">
               -- 請先選擇請假紀錄 --
@@ -518,7 +811,9 @@
 
         <div class="form-group">
 
-          <label>預約補課日期</label>
+          <label>
+            預約補課日期
+          </label>
 
           <input
             type="date"
@@ -530,7 +825,9 @@
 
         <div class="form-group">
 
-          <label>選擇補課時段</label>
+          <label>
+            選擇補課時段
+          </label>
 
           <select
             id="makeup-slot-select"
@@ -558,15 +855,13 @@
             </option>
 
             <option value="其他">
-              其他 (自行填寫)
+              其他（自行填寫）
             </option>
 
           </select>
 
         </div>
 
-
-        <!-- 其他補課時段 -->
 
         <div
           class="form-group hidden"
@@ -596,9 +891,9 @@
       </div>
 
 
-      <!-- ========================================================
+      <!-- ======================================================
            歷史紀錄
-      ========================================================= -->
+      ======================================================= -->
 
       <div style="margin-top:24px;">
 
@@ -612,12 +907,12 @@
 
 
         <h3
+          id="history-title"
           style="
             font-size:15px;
             color:#334155;
             margin-bottom:10px;
           "
-          id="history-title"
         >
           📋 近期請假紀錄
         </h3>
@@ -636,6 +931,7 @@
 
   <script>
 
+
     // ==========================================================
     // 全域變數
     // ==========================================================
@@ -644,21 +940,13 @@
 
     let userLineId = "";
 
-    // 所有目前 LINE 使用者綁定的學員
     let userBindings = [];
 
     let currentTab = "leave";
 
 
     // ==========================================================
-    // 判斷目前是否正在新增學員
-    // ==========================================================
-
-    let isAddingStudent = false;
-
-
-    // ==========================================================
-    // GAS API 設定
+    // GAS API
     // ==========================================================
 
     const GAS_API_URL =
@@ -689,9 +977,7 @@
           !message ||
           message.channel !== GAS_API_CHANNEL
         ) {
-
           return;
-
         }
 
 
@@ -702,9 +988,7 @@
 
 
         if (!pending) {
-
           return;
-
         }
 
 
@@ -772,8 +1056,6 @@
               .slice(2);
 
 
-          // 建立隱藏 iframe
-
           const iframe =
             document.createElement(
               "iframe"
@@ -809,8 +1091,6 @@
           );
 
 
-          // 建立 POST Form
-
           const form =
             document.createElement(
               "form"
@@ -833,8 +1113,6 @@
             "none";
 
 
-          // requestId
-
           const requestInput =
             document.createElement(
               "input"
@@ -852,8 +1130,6 @@
           requestInput.value =
             requestId;
 
-
-          // payload
 
           const payloadInput =
             document.createElement(
@@ -902,8 +1178,6 @@
           form.remove();
 
 
-          // 30 秒 timeout
-
           setTimeout(
             function() {
 
@@ -914,9 +1188,7 @@
 
 
               if (!pending) {
-
                 return;
-
               }
 
 
@@ -1183,7 +1455,7 @@
 
 
     // ==========================================================
-    // Google Apps Script 伺服器錯誤
+    // GAS 伺服器錯誤
     // ==========================================================
 
     function onServerFail(
@@ -1207,8 +1479,7 @@
 
 
     // ==========================================================
-    // 關係選擇
-    // 選擇「其他」時顯示自填欄位
+    // 第一次綁定：關係選擇
     // ==========================================================
 
     function handleRelationChange() {
@@ -1249,8 +1520,7 @@
         );
 
 
-        otherInput.value =
-          "";
+        otherInput.value = "";
 
       }
 
@@ -1258,194 +1528,22 @@
 
 
     // ==========================================================
-    // 顯示新增學員表單
-    // ==========================================================
-
-    function showAddStudentForm() {
-
-      isAddingStudent =
-        true;
-
-
-      // 隱藏主畫面
-
-      document
-        .getElementById(
-          "main-section"
-        )
-        .classList.add(
-          "hidden"
-        );
-
-
-      // 顯示綁定畫面
-
-      document
-        .getElementById(
-          "bind-section"
-        )
-        .classList.remove(
-          "hidden"
-        );
-
-
-      // 修改標題
-
-      document
-        .getElementById(
-          "bind-section-title"
-        )
-        .innerText =
-          "👤 新增學員";
-
-
-      // 修改提示
-
-      document
-        .getElementById(
-          "bind-section-notice"
-        )
-        .innerText =
-          "您可以在這裡新增另一位學員。新增完成後，之後就可以在「選擇學員」中切換使用。";
-
-
-      // 修改按鈕
-
-      document
-        .getElementById(
-          "bind-submit-button"
-        )
-        .innerText =
-          "完成新增";
-
-
-      // 顯示取消按鈕
-
-      document
-        .getElementById(
-          "bind-cancel-button"
-        )
-        .classList.remove(
-          "hidden"
-        );
-
-
-      // 清空欄位
-
-      resetBindForm();
-
-
-      // 游標
-
-      document
-        .getElementById(
-          "bind-student"
-        )
-        .focus();
-
-    }
-
-
-    // ==========================================================
-    // 取消新增學員
-    // ==========================================================
-
-    function cancelAddStudent() {
-
-      isAddingStudent =
-        false;
-
-
-      resetBindForm();
-
-
-      document
-        .getElementById(
-          "bind-section"
-        )
-        .classList.add(
-          "hidden"
-        );
-
-
-      document
-        .getElementById(
-          "main-section"
-        )
-        .classList.remove(
-          "hidden"
-        );
-
-    }
-
-
-    // ==========================================================
-    // 重設綁定表單
-    // ==========================================================
-
-    function resetBindForm() {
-
-      document
-        .getElementById(
-          "bind-student"
-        )
-        .value =
-          "";
-
-
-      document
-        .getElementById(
-          "bind-relation"
-        )
-        .value =
-          "爸爸";
-
-
-      document
-        .getElementById(
-          "bind-other-relation"
-        )
-        .value =
-          "";
-
-
-      document
-        .getElementById(
-          "bind-other-relation-group"
-        )
-        .classList.add(
-          "hidden"
-        );
-
-    }
-
-
-    // ==========================================================
-    // 綁定學員
+    // 第一次綁定
     // ==========================================================
 
     function handleBind() {
 
       const studentName =
-        document
-          .getElementById(
-            "bind-student"
-          )
-          .value
-          .trim();
+        document.getElementById(
+          "bind-student"
+        ).value.trim();
 
 
       let relation =
-        document
-          .getElementById(
-            "bind-relation"
-          )
-          .value;
+        document.getElementById(
+          "bind-relation"
+        ).value;
 
-
-      // --------------------------------------------------------
-      // 如果選擇「其他」
-      // --------------------------------------------------------
 
       if (
         relation === "其他"
@@ -1477,10 +1575,6 @@
       }
 
 
-      // --------------------------------------------------------
-      // 確認 LINE 身分
-      // --------------------------------------------------------
-
       if (
         !lineIdToken ||
         !userLineId
@@ -1495,10 +1589,6 @@
       }
 
 
-      // --------------------------------------------------------
-      // 確認學員姓名
-      // --------------------------------------------------------
-
       if (!studentName) {
 
         alert(
@@ -1509,56 +1599,6 @@
 
       }
 
-
-      // --------------------------------------------------------
-      // 前端先檢查是否已經存在
-      // --------------------------------------------------------
-
-      const alreadyExists =
-        userBindings.some(
-          function(binding) {
-
-            return (
-              String(binding.studentName || "")
-                .trim() === studentName
-            );
-
-          }
-        );
-
-
-      if (alreadyExists) {
-
-        alert(
-          "這位學員已經綁定過了！"
-        );
-
-        return;
-
-      }
-
-
-      // --------------------------------------------------------
-      // 按鈕防止重複送出
-      // --------------------------------------------------------
-
-      const submitButton =
-        document.getElementById(
-          "bind-submit-button"
-        );
-
-
-      submitButton.disabled =
-        true;
-
-
-      submitButton.innerText =
-        "處理中，請稍候...";
-
-
-      // --------------------------------------------------------
-      // 傳送到 GAS
-      // --------------------------------------------------------
 
       callGasApi(
         "registerUser",
@@ -1578,17 +1618,12 @@
       )
 
       .then(
-        function(result) {
+        function() {
 
-          console.log(
-            "registerUser result:",
-            result
+          alert(
+            "綁定成功！"
           );
 
-
-          // ----------------------------------------------------
-          // 更新目前頁面的綁定資料
-          // ----------------------------------------------------
 
           userBindings.push({
 
@@ -1601,40 +1636,6 @@
           });
 
 
-          // ----------------------------------------------------
-          // 判斷是第一次綁定還是新增學員
-          // ----------------------------------------------------
-
-          if (isAddingStudent) {
-
-            alert(
-              "新增學員成功！"
-            );
-
-          } else {
-
-            alert(
-              "綁定成功！"
-            );
-
-          }
-
-
-          // ----------------------------------------------------
-          // 重設狀態
-          // ----------------------------------------------------
-
-          isAddingStudent =
-            false;
-
-
-          resetBindForm();
-
-
-          // ----------------------------------------------------
-          // 隱藏綁定畫面
-          // ----------------------------------------------------
-
           document
             .getElementById(
               "bind-section"
@@ -1644,31 +1645,7 @@
             );
 
 
-          // ----------------------------------------------------
-          // 恢復主系統
-          // ----------------------------------------------------
-
           showMainSection();
-
-
-          // ----------------------------------------------------
-          // 選取剛新增的學員
-          // ----------------------------------------------------
-
-          const studentSelect =
-            document.getElementById(
-              "student-select"
-            );
-
-
-          studentSelect.value =
-            studentName;
-
-
-          updateStudentCount();
-
-
-          onStudentChange();
 
         }
       )
@@ -1685,21 +1662,6 @@
                 : err
             )
           );
-
-        }
-      )
-
-      .finally(
-        function() {
-
-          submitButton.disabled =
-            false;
-
-
-          submitButton.innerText =
-            isAddingStudent
-              ? "完成新增"
-              : "完成綁定並進入";
 
         }
       );
@@ -1722,10 +1684,36 @@
         );
 
 
+      updateMemberSelect();
+
+
+      document
+        .getElementById(
+          "user-info-text"
+        )
+        .innerText =
+          "👋 您好，系統已自動確認您的 LINE 身分。";
+
+
+      onStudentChange();
+
+    }
+
+
+    // ==========================================================
+    // 更新成員選單
+    // ==========================================================
+
+    function updateMemberSelect() {
+
       const select =
         document.getElementById(
           "student-select"
         );
+
+
+      const currentStudent =
+        select.value;
 
 
       select.innerHTML =
@@ -1747,9 +1735,9 @@
 
           opt.text =
             binding.studentName +
-            " (" +
+            "（" +
             binding.relation +
-            ")";
+            "）";
 
 
           select.appendChild(
@@ -1760,27 +1748,55 @@
       );
 
 
-      updateStudentCount();
+      /*
+       * 如果原本選擇的成員仍然存在
+       * 就維持原本選擇
+       */
 
-
-      document
-        .getElementById(
-          "user-info-text"
+      if (
+        currentStudent &&
+        userBindings.some(
+          function(binding) {
+            return (
+              binding.studentName ===
+              currentStudent
+            );
+          }
         )
-        .innerText =
-          "👋 您好，系統已自動確認您的 LINE 身分。您可以在下方選擇要操作的學員。";
+      ) {
+
+        select.value =
+          currentStudent;
+
+      }
 
 
-      onStudentChange();
+      /*
+       * 如果沒有選擇
+       * 預設選第一位
+       */
+
+      if (
+        !select.value &&
+        userBindings.length > 0
+      ) {
+
+        select.selectedIndex =
+          0;
+
+      }
+
+
+      updateMemberCount();
 
     }
 
 
     // ==========================================================
-    // 更新學員數量
+    // 更新目前成員數量
     // ==========================================================
 
-    function updateStudentCount() {
+    function updateMemberCount() {
 
       const count =
         userBindings.length;
@@ -1788,30 +1804,373 @@
 
       const countElement =
         document.getElementById(
-          "student-count"
+          "member-count"
         );
 
 
-      if (count <= 0) {
-
-        countElement.innerText =
-          "";
-
+      if (!countElement) {
         return;
-
       }
 
 
       countElement.innerText =
         "目前 " +
         count +
-        " 位學員";
+        " 位成員";
 
     }
 
 
     // ==========================================================
-    // 學員切換
+    // 顯示新增成員
+    // ==========================================================
+
+    function showAddMember() {
+
+      const box =
+        document.getElementById(
+          "add-member-box"
+        );
+
+
+      box.classList.remove(
+        "hidden"
+      );
+
+
+      document
+        .getElementById(
+          "add-student"
+        )
+        .focus();
+
+    }
+
+
+    // ==========================================================
+    // 取消新增成員
+    // ==========================================================
+
+    function cancelAddMember() {
+
+      clearAddMemberForm();
+
+
+      document
+        .getElementById(
+          "add-member-box"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+    }
+
+
+    // ==========================================================
+    // 清除新增成員表單
+    // ==========================================================
+
+    function clearAddMemberForm() {
+
+      document
+        .getElementById(
+          "add-student"
+        )
+        .value =
+          "";
+
+
+      document
+        .getElementById(
+          "add-relation"
+        )
+        .value =
+          "爸爸";
+
+
+      document
+        .getElementById(
+          "add-other-relation"
+        )
+        .value =
+          "";
+
+
+      document
+        .getElementById(
+          "add-other-relation-group"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+    }
+
+
+    // ==========================================================
+    // 新增成員：關係選擇
+    // ==========================================================
+
+    function handleAddRelationChange() {
+
+      const relation =
+        document.getElementById(
+          "add-relation"
+        ).value;
+
+
+      const otherGroup =
+        document.getElementById(
+          "add-other-relation-group"
+        );
+
+
+      const otherInput =
+        document.getElementById(
+          "add-other-relation"
+        );
+
+
+      if (
+        relation === "其他"
+      ) {
+
+        otherGroup.classList.remove(
+          "hidden"
+        );
+
+
+        otherInput.focus();
+
+      } else {
+
+        otherGroup.classList.add(
+          "hidden"
+        );
+
+
+        otherInput.value = "";
+
+      }
+
+    }
+
+
+    // ==========================================================
+    // 新增第二、第三位成員
+    // ==========================================================
+
+    function handleAddMember() {
+
+      const studentName =
+        document
+          .getElementById(
+            "add-student"
+          )
+          .value
+          .trim();
+
+
+      let relation =
+        document
+          .getElementById(
+            "add-relation"
+          )
+          .value;
+
+
+      /*
+       * 如果選擇其他
+       */
+
+      if (
+        relation === "其他"
+      ) {
+
+        const otherRelation =
+          document
+            .getElementById(
+              "add-other-relation"
+            )
+            .value
+            .trim();
+
+
+        if (!otherRelation) {
+
+          alert(
+            "請填寫您與學員的關係！"
+          );
+
+          return;
+
+        }
+
+
+        relation =
+          otherRelation;
+
+      }
+
+
+      /*
+       * 基本驗證
+       */
+
+      if (!studentName) {
+
+        alert(
+          "請輸入學員姓名！"
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !lineIdToken ||
+        !userLineId
+      ) {
+
+        alert(
+          "尚未取得 LINE 身分，請重新開啟系統。"
+        );
+
+        return;
+
+      }
+
+
+      /*
+       * 防止前端重複新增
+       */
+
+      const alreadyExists =
+        userBindings.some(
+          function(binding) {
+
+            return (
+              binding.studentName ===
+              studentName
+            );
+
+          }
+        );
+
+
+      if (alreadyExists) {
+
+        alert(
+          "這位成員已經綁定，不需要重複新增。"
+        );
+
+        return;
+
+      }
+
+
+      /*
+       * 呼叫 GAS
+       */
+
+      callGasApi(
+        "registerUser",
+        {
+
+          idToken:
+            lineIdToken,
+
+          studentName:
+            studentName,
+
+          relation:
+            relation
+
+        }
+
+      )
+
+      .then(
+        function() {
+
+          alert(
+            "新增成員成功！"
+          );
+
+
+          /*
+           * 加入目前記憶體
+           */
+
+          userBindings.push({
+
+            studentName:
+              studentName,
+
+            relation:
+              relation
+
+          });
+
+
+          /*
+           * 更新下拉選單
+           */
+
+          updateMemberSelect();
+
+
+          /*
+           * 自動切換到剛新增的成員
+           */
+
+          document
+            .getElementById(
+              "student-select"
+            )
+            .value =
+              studentName;
+
+
+          /*
+           * 關閉新增區
+           */
+
+          cancelAddMember();
+
+
+          /*
+           * 重新載入資料
+           */
+
+          onStudentChange();
+
+        }
+      )
+
+      .catch(
+        function(err) {
+
+          alert(
+            "新增成員失敗：" +
+            (
+              err &&
+              err.message
+                ? err.message
+                : err
+            )
+          );
+
+        }
+      );
+
+    }
+
+
+    // ==========================================================
+    // 成員切換
     // ==========================================================
 
     function onStudentChange() {
@@ -2096,6 +2455,7 @@
                 h.reason || "無"
               );
 
+
           } else {
 
             info =
@@ -2178,7 +2538,7 @@
 
         selectOriginal.innerHTML =
           "<option value=''>" +
-          "-- 請先選擇學員 --" +
+          "-- 請先選擇成員 --" +
           "</option>";
 
 
@@ -2215,7 +2575,7 @@
 
             selectOriginal.innerHTML =
               "<option value=''>" +
-              "⚠️ 該學員目前沒有可用的請假紀錄" +
+              "⚠️ 該成員目前沒有可用的請假紀錄" +
               "</option>";
 
 
@@ -2259,12 +2619,12 @@
               opt.text =
                 "📅 原請假日期：" +
                 leave.date +
-                " (原因: " +
+                "（原因：" +
                 (
                   leave.reason ||
                   "無"
                 ) +
-                ")";
+                "）";
 
 
               selectOriginal.appendChild(
@@ -2331,7 +2691,7 @@
       if (!studentName) {
 
         alert(
-          "請先選擇學員！"
+          "請先選擇成員！"
         );
 
         return;
@@ -2513,7 +2873,7 @@
       if (!studentName) {
 
         alert(
-          "請先選擇學員！"
+          "請先選擇成員！"
         );
 
         return;
@@ -2703,46 +3063,9 @@
         userBindings.length === 0
       ) {
 
-        // ======================================================
-        // 第一次使用
-        // ======================================================
-
-        isAddingStudent =
-          false;
-
-
-        document
-          .getElementById(
-            "bind-section-title"
-          )
-          .innerText =
-            "👤 綁定學員";
-
-
-        document
-          .getElementById(
-            "bind-section-notice"
-          )
-          .innerText =
-            "您好！這是您第一次使用本系統。請先綁定一位學員，之後即可直接使用請假與補課功能。";
-
-
-        document
-          .getElementById(
-            "bind-submit-button"
-          )
-          .innerText =
-            "完成綁定並進入";
-
-
-        document
-          .getElementById(
-            "bind-cancel-button"
-          )
-          .classList.add(
-            "hidden"
-          );
-
+        /*
+         * 第一次使用
+         */
 
         document
           .getElementById(
@@ -2755,9 +3078,9 @@
 
       } else {
 
-        // ======================================================
-        // 已經有綁定資料
-        // ======================================================
+        /*
+         * 已經有成員
+         */
 
         showMainSection();
 
@@ -2765,9 +3088,9 @@
 
     }
 
+
   </script>
 
 </body>
 
 </html>
-```
