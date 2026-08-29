@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 
@@ -11,6 +12,7 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: #f8fafc;
@@ -18,6 +20,7 @@
       padding: 16px;
       color: #1e293b;
     }
+
 
     .container {
       max-width: 500px;
@@ -28,6 +31,7 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     }
 
+
     h2 {
       color: #4f46e5;
       text-align: center;
@@ -35,11 +39,13 @@
       font-size: 22px;
     }
 
+
     .tabs {
       display: flex;
       margin-bottom: 20px;
       border-bottom: 2px solid #e2e8f0;
     }
+
 
     .tab {
       flex: 1;
@@ -51,15 +57,18 @@
       font-size: 15px;
     }
 
+
     .tab.active {
       color: #4f46e5;
       border-bottom: 3px solid #4f46e5;
       margin-bottom: -2px;
     }
 
+
     .form-group {
       margin-bottom: 16px;
     }
+
 
     label {
       display: block;
@@ -68,6 +77,7 @@
       font-size: 14px;
       color: #475569;
     }
+
 
     input,
     select,
@@ -79,6 +89,7 @@
       box-sizing: border-box;
       font-size: 15px;
     }
+
 
     button {
       width: 100%;
@@ -93,18 +104,22 @@
       margin-top: 8px;
     }
 
+
     button:hover {
       background: #4338ca;
     }
+
 
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
 
+
     .hidden {
       display: none;
     }
+
 
     .notice {
       background: #eef2ff;
@@ -117,6 +132,7 @@
       line-height: 1.5;
     }
 
+
     .history-card {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
@@ -125,6 +141,7 @@
       margin-bottom: 8px;
       font-size: 13px;
     }
+
 
     .error-box {
       background: #fef2f2;
@@ -138,6 +155,7 @@
       word-break: break-word;
     }
 
+
     .line-id-box {
       margin-top: 12px;
       padding: 10px;
@@ -147,8 +165,76 @@
       word-break: break-all;
       color: #475569;
     }
+
+
+    /* ==========================================================
+       新增學員按鈕
+    ========================================================== */
+
+    .add-student-button {
+      background: #10b981;
+      margin-top: 10px;
+    }
+
+
+    .add-student-button:hover {
+      background: #059669;
+    }
+
+
+    /* ==========================================================
+       取消按鈕
+    ========================================================== */
+
+    .cancel-button {
+      background: #94a3b8;
+      margin-top: 8px;
+    }
+
+
+    .cancel-button:hover {
+      background: #64748b;
+    }
+
+
+    /* ==========================================================
+       綁定表單標題
+    ========================================================== */
+
+    .bind-title {
+      color: #334155;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+
+    /* ==========================================================
+       學員區塊
+    ========================================================== */
+
+    .student-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+
+    .student-header label {
+      margin-bottom: 0;
+    }
+
+
+    .student-count {
+      font-size: 12px;
+      color: #64748b;
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
@@ -156,26 +242,52 @@
 
     <h2>⚽ 新屋足球俱樂部</h2>
 
+
     <!-- ==========================================================
          載入中
     =========================================================== -->
-    <div id="loading" style="text-align:center; padding:30px; color:#64748b;">
+
+    <div
+      id="loading"
+      style="text-align:center; padding:30px; color:#64748b;"
+    >
       載入中，正在確認您的 LINE 身分...
     </div>
 
 
     <!-- ==========================================================
-         第一次綁定區塊
+         綁定學員區塊
+         
+         第一次使用：
+         顯示第一位學員綁定
+
+         已經有學員：
+         點「新增學員」後再次使用這個區塊
     =========================================================== -->
+
     <div id="bind-section" class="hidden">
 
-      <div class="notice">
-        您好！這是您第一次使用本系統。為了方便您之後直接點開就能使用，
-        請先簡單綁定學員資料（只需要設定一次）。
+      <div
+        class="bind-title"
+        id="bind-section-title"
+      >
+        👤 綁定學員
       </div>
 
 
-      <!-- 學員姓名 -->
+      <div
+        class="notice"
+        id="bind-section-notice"
+      >
+        您好！這是您第一次使用本系統。
+        請先綁定一位學員，之後即可直接使用請假與補課功能。
+      </div>
+
+
+      <!-- ========================================================
+           學員姓名
+      ========================================================= -->
+
       <div class="form-group">
 
         <label>學員姓名</label>
@@ -184,12 +296,16 @@
           type="text"
           id="bind-student"
           placeholder="例如：王小明"
+          maxlength="30"
         >
 
       </div>
 
 
-      <!-- 家長 / 親屬關係 -->
+      <!-- ========================================================
+           關係
+      ========================================================= -->
+
       <div class="form-group">
 
         <label>您與學員的關係</label>
@@ -214,7 +330,10 @@
       </div>
 
 
-      <!-- 選擇其他時才顯示 -->
+      <!-- ========================================================
+           其他關係
+      ========================================================= -->
+
       <div
         class="form-group hidden"
         id="bind-other-relation-group"
@@ -225,16 +344,35 @@
         <input
           type="text"
           id="bind-other-relation"
-          placeholder="例如：叔叔、姑姑、監護人、其他親屬"
+          placeholder="例如：阿姨、叔叔、朋友、監護人"
           maxlength="20"
         >
 
       </div>
 
 
-      <!-- 完成綁定 -->
-      <button onclick="handleBind()">
+      <!-- ========================================================
+           儲存綁定
+      ========================================================= -->
+
+      <button
+        id="bind-submit-button"
+        onclick="handleBind()"
+      >
         完成綁定並進入
+      </button>
+
+
+      <!-- ========================================================
+           取消新增
+      ========================================================= -->
+
+      <button
+        id="bind-cancel-button"
+        class="cancel-button hidden"
+        onclick="cancelAddStudent()"
+      >
+        取消新增
       </button>
 
     </div>
@@ -243,6 +381,7 @@
     <!-- ==========================================================
          主系統介面
     =========================================================== -->
+
     <div id="main-section" class="hidden">
 
       <div
@@ -251,7 +390,10 @@
       ></div>
 
 
-      <!-- 分頁 -->
+      <!-- ========================================================
+           分頁
+      ========================================================= -->
+
       <div class="tabs">
 
         <div
@@ -260,6 +402,7 @@
         >
           請假申請
         </div>
+
 
         <div
           class="tab"
@@ -274,14 +417,36 @@
       <!-- ========================================================
            選擇學員
       ========================================================= -->
+
       <div class="form-group">
 
-        <label>選擇學員</label>
+        <div class="student-header">
+
+          <label>選擇學員</label>
+
+          <span
+            class="student-count"
+            id="student-count"
+          ></span>
+
+        </div>
+
 
         <select
           id="student-select"
           onchange="onStudentChange()"
         ></select>
+
+
+        <!-- 新增學員 -->
+
+        <button
+          type="button"
+          class="add-student-button"
+          onclick="showAddStudentForm()"
+        >
+          ＋ 新增學員
+        </button>
 
       </div>
 
@@ -289,6 +454,7 @@
       <!-- ========================================================
            請假表單
       ========================================================= -->
+
       <div id="leave-form-pane">
 
         <div class="form-group">
@@ -326,6 +492,7 @@
       <!-- ========================================================
            補課表單
       ========================================================= -->
+
       <div
         id="makeup-form-pane"
         class="hidden"
@@ -336,6 +503,7 @@
           <label>
             📌 選擇要抵扣的原請假日期 (對應缺課)
           </label>
+
 
           <select id="makeup-original-date">
 
@@ -399,6 +567,7 @@
 
 
         <!-- 其他補課時段 -->
+
         <div
           class="form-group hidden"
           id="makeup-other-group"
@@ -430,6 +599,7 @@
       <!-- ========================================================
            歷史紀錄
       ========================================================= -->
+
       <div style="margin-top:24px;">
 
         <hr
@@ -439,6 +609,7 @@
             border-top:1px solid #e2e8f0;
           "
         >
+
 
         <h3
           style="
@@ -450,6 +621,7 @@
         >
           📋 近期請假紀錄
         </h3>
+
 
         <div id="history-list">
           尚無紀錄
@@ -468,16 +640,21 @@
     // 全域變數
     // ==========================================================
 
-    // LINE ID Token 只保留在目前頁面的記憶體中
-    // 不寫入 localStorage。
-
     let lineIdToken = "";
 
     let userLineId = "";
 
+    // 所有目前 LINE 使用者綁定的學員
     let userBindings = [];
 
     let currentTab = "leave";
+
+
+    // ==========================================================
+    // 判斷目前是否正在新增學員
+    // ==========================================================
+
+    let isAddingStudent = false;
 
 
     // ==========================================================
@@ -486,6 +663,7 @@
 
     const GAS_API_URL =
       "https://script.google.com/macros/s/AKfycbz19xfdnz83kb2Ft9KET9M1GjFWBIhWjzsSiIgYvUnHyA0z2CZZthcXxPpy735uYICs/exec";
+
 
     const GAS_API_CHANNEL =
       "NEW屋_SOCCER_GAS_API";
@@ -506,11 +684,14 @@
         const message =
           event && event.data;
 
+
         if (
           !message ||
           message.channel !== GAS_API_CHANNEL
         ) {
+
           return;
+
         }
 
 
@@ -519,8 +700,11 @@
             message.requestId
           );
 
+
         if (!pending) {
+
           return;
+
         }
 
 
@@ -589,21 +773,26 @@
 
 
           // 建立隱藏 iframe
+
           const iframe =
             document.createElement(
               "iframe"
             );
 
+
           iframe.name =
             requestId;
 
+
           iframe.style.display =
             "none";
+
 
           iframe.setAttribute(
             "aria-hidden",
             "true"
           );
+
 
           document.body.appendChild(
             iframe
@@ -621,51 +810,64 @@
 
 
           // 建立 POST Form
+
           const form =
             document.createElement(
               "form"
             );
 
+
           form.method =
             "POST";
+
 
           form.action =
             GAS_API_URL;
 
+
           form.target =
             requestId;
+
 
           form.style.display =
             "none";
 
 
           // requestId
+
           const requestInput =
             document.createElement(
               "input"
             );
 
+
           requestInput.type =
             "hidden";
 
+
           requestInput.name =
             "requestId";
+
 
           requestInput.value =
             requestId;
 
 
           // payload
+
           const payloadInput =
             document.createElement(
               "input"
             );
 
+
           payloadInput.type =
             "hidden";
 
+
           payloadInput.name =
             "payload";
+
 
           payloadInput.value =
             JSON.stringify(
@@ -683,9 +885,11 @@
             requestInput
           );
 
+
           form.appendChild(
             payloadInput
           );
+
 
           document.body.appendChild(
             form
@@ -694,10 +898,12 @@
 
           form.submit();
 
+
           form.remove();
 
 
           // 30 秒 timeout
+
           setTimeout(
             function() {
 
@@ -706,8 +912,11 @@
                   requestId
                 );
 
+
               if (!pending) {
+
                 return;
+
               }
 
 
@@ -998,7 +1207,7 @@
 
 
     // ==========================================================
-    // 家長關係：
+    // 關係選擇
     // 選擇「其他」時顯示自填欄位
     // ==========================================================
 
@@ -1026,26 +1235,22 @@
         relation === "其他"
       ) {
 
-        // 顯示自填欄位
         otherGroup.classList.remove(
           "hidden"
         );
 
 
-        // 自動讓游標進入輸入框
         otherInput.focus();
-
 
       } else {
 
-        // 隱藏自填欄位
         otherGroup.classList.add(
           "hidden"
         );
 
 
-        // 清除之前輸入的內容
-        otherInput.value = "";
+        otherInput.value =
+          "";
 
       }
 
@@ -1053,26 +1258,193 @@
 
 
     // ==========================================================
-    // 綁定家長 / 學員
+    // 顯示新增學員表單
+    // ==========================================================
+
+    function showAddStudentForm() {
+
+      isAddingStudent =
+        true;
+
+
+      // 隱藏主畫面
+
+      document
+        .getElementById(
+          "main-section"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+
+      // 顯示綁定畫面
+
+      document
+        .getElementById(
+          "bind-section"
+        )
+        .classList.remove(
+          "hidden"
+        );
+
+
+      // 修改標題
+
+      document
+        .getElementById(
+          "bind-section-title"
+        )
+        .innerText =
+          "👤 新增學員";
+
+
+      // 修改提示
+
+      document
+        .getElementById(
+          "bind-section-notice"
+        )
+        .innerText =
+          "您可以在這裡新增另一位學員。新增完成後，之後就可以在「選擇學員」中切換使用。";
+
+
+      // 修改按鈕
+
+      document
+        .getElementById(
+          "bind-submit-button"
+        )
+        .innerText =
+          "完成新增";
+
+
+      // 顯示取消按鈕
+
+      document
+        .getElementById(
+          "bind-cancel-button"
+        )
+        .classList.remove(
+          "hidden"
+        );
+
+
+      // 清空欄位
+
+      resetBindForm();
+
+
+      // 游標
+
+      document
+        .getElementById(
+          "bind-student"
+        )
+        .focus();
+
+    }
+
+
+    // ==========================================================
+    // 取消新增學員
+    // ==========================================================
+
+    function cancelAddStudent() {
+
+      isAddingStudent =
+        false;
+
+
+      resetBindForm();
+
+
+      document
+        .getElementById(
+          "bind-section"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+
+      document
+        .getElementById(
+          "main-section"
+        )
+        .classList.remove(
+          "hidden"
+        );
+
+    }
+
+
+    // ==========================================================
+    // 重設綁定表單
+    // ==========================================================
+
+    function resetBindForm() {
+
+      document
+        .getElementById(
+          "bind-student"
+        )
+        .value =
+          "";
+
+
+      document
+        .getElementById(
+          "bind-relation"
+        )
+        .value =
+          "爸爸";
+
+
+      document
+        .getElementById(
+          "bind-other-relation"
+        )
+        .value =
+          "";
+
+
+      document
+        .getElementById(
+          "bind-other-relation-group"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+    }
+
+
+    // ==========================================================
+    // 綁定學員
     // ==========================================================
 
     function handleBind() {
 
       const studentName =
-        document.getElementById(
-          "bind-student"
-        ).value.trim();
+        document
+          .getElementById(
+            "bind-student"
+          )
+          .value
+          .trim();
 
 
       let relation =
-        document.getElementById(
-          "bind-relation"
-        ).value;
+        document
+          .getElementById(
+            "bind-relation"
+          )
+          .value;
 
 
       // --------------------------------------------------------
       // 如果選擇「其他」
-      // 就使用使用者自行填寫的關係
       // --------------------------------------------------------
 
       if (
@@ -1139,6 +1511,52 @@
 
 
       // --------------------------------------------------------
+      // 前端先檢查是否已經存在
+      // --------------------------------------------------------
+
+      const alreadyExists =
+        userBindings.some(
+          function(binding) {
+
+            return (
+              String(binding.studentName || "")
+                .trim() === studentName
+            );
+
+          }
+        );
+
+
+      if (alreadyExists) {
+
+        alert(
+          "這位學員已經綁定過了！"
+        );
+
+        return;
+
+      }
+
+
+      // --------------------------------------------------------
+      // 按鈕防止重複送出
+      // --------------------------------------------------------
+
+      const submitButton =
+        document.getElementById(
+          "bind-submit-button"
+        );
+
+
+      submitButton.disabled =
+        true;
+
+
+      submitButton.innerText =
+        "處理中，請稍候...";
+
+
+      // --------------------------------------------------------
       // 傳送到 GAS
       // --------------------------------------------------------
 
@@ -1160,14 +1578,18 @@
       )
 
       .then(
-        function() {
+        function(result) {
 
-          alert(
-            "綁定成功！"
+          console.log(
+            "registerUser result:",
+            result
           );
 
 
+          // ----------------------------------------------------
           // 更新目前頁面的綁定資料
+          // ----------------------------------------------------
+
           userBindings.push({
 
             studentName:
@@ -1179,7 +1601,40 @@
           });
 
 
+          // ----------------------------------------------------
+          // 判斷是第一次綁定還是新增學員
+          // ----------------------------------------------------
+
+          if (isAddingStudent) {
+
+            alert(
+              "新增學員成功！"
+            );
+
+          } else {
+
+            alert(
+              "綁定成功！"
+            );
+
+          }
+
+
+          // ----------------------------------------------------
+          // 重設狀態
+          // ----------------------------------------------------
+
+          isAddingStudent =
+            false;
+
+
+          resetBindForm();
+
+
+          // ----------------------------------------------------
           // 隱藏綁定畫面
+          // ----------------------------------------------------
+
           document
             .getElementById(
               "bind-section"
@@ -1189,8 +1644,31 @@
             );
 
 
-          // 顯示主系統
+          // ----------------------------------------------------
+          // 恢復主系統
+          // ----------------------------------------------------
+
           showMainSection();
+
+
+          // ----------------------------------------------------
+          // 選取剛新增的學員
+          // ----------------------------------------------------
+
+          const studentSelect =
+            document.getElementById(
+              "student-select"
+            );
+
+
+          studentSelect.value =
+            studentName;
+
+
+          updateStudentCount();
+
+
+          onStudentChange();
 
         }
       )
@@ -1207,6 +1685,21 @@
                 : err
             )
           );
+
+        }
+      )
+
+      .finally(
+        function() {
+
+          submitButton.disabled =
+            false;
+
+
+          submitButton.innerText =
+            isAddingStudent
+              ? "完成新增"
+              : "完成綁定並進入";
 
         }
       );
@@ -1267,15 +1760,52 @@
       );
 
 
+      updateStudentCount();
+
+
       document
         .getElementById(
           "user-info-text"
         )
         .innerText =
-          "👋 您好，系統已自動確認您的 LINE 身分。";
+          "👋 您好，系統已自動確認您的 LINE 身分。您可以在下方選擇要操作的學員。";
 
 
       onStudentChange();
+
+    }
+
+
+    // ==========================================================
+    // 更新學員數量
+    // ==========================================================
+
+    function updateStudentCount() {
+
+      const count =
+        userBindings.length;
+
+
+      const countElement =
+        document.getElementById(
+          "student-count"
+        );
+
+
+      if (count <= 0) {
+
+        countElement.innerText =
+          "";
+
+        return;
+
+      }
+
+
+      countElement.innerText =
+        "目前 " +
+        count +
+        " 位學員";
 
     }
 
@@ -1435,7 +1965,6 @@
           "hidden"
         );
 
-
       } else {
 
         otherGroup.classList.add(
@@ -1447,7 +1976,8 @@
           .getElementById(
             "makeup-other-input"
           )
-          .value = "";
+          .value =
+            "";
 
       }
 
@@ -1565,7 +2095,6 @@
               escapeHtml(
                 h.reason || "無"
               );
-
 
           } else {
 
@@ -1689,6 +2218,7 @@
               "⚠️ 該學員目前沒有可用的請假紀錄" +
               "</option>";
 
+
             return;
 
           }
@@ -1791,6 +2321,17 @@
 
         alert(
           "尚未取得 LINE 身分，請重新開啟系統。"
+        );
+
+        return;
+
+      }
+
+
+      if (!studentName) {
+
+        alert(
+          "請先選擇學員！"
         );
 
         return;
@@ -1962,6 +2503,17 @@
 
         alert(
           "尚未取得 LINE 身分，請重新開啟系統。"
+        );
+
+        return;
+
+      }
+
+
+      if (!studentName) {
+
+        alert(
+          "請先選擇學員！"
         );
 
         return;
@@ -2151,8 +2703,46 @@
         userBindings.length === 0
       ) {
 
-        // 沒有綁定資料
-        // 顯示第一次綁定畫面
+        // ======================================================
+        // 第一次使用
+        // ======================================================
+
+        isAddingStudent =
+          false;
+
+
+        document
+          .getElementById(
+            "bind-section-title"
+          )
+          .innerText =
+            "👤 綁定學員";
+
+
+        document
+          .getElementById(
+            "bind-section-notice"
+          )
+          .innerText =
+            "您好！這是您第一次使用本系統。請先綁定一位學員，之後即可直接使用請假與補課功能。";
+
+
+        document
+          .getElementById(
+            "bind-submit-button"
+          )
+          .innerText =
+            "完成綁定並進入";
+
+
+        document
+          .getElementById(
+            "bind-cancel-button"
+          )
+          .classList.add(
+            "hidden"
+          );
+
 
         document
           .getElementById(
@@ -2165,8 +2755,9 @@
 
       } else {
 
-        // 已經綁定
-        // 直接進入主系統
+        // ======================================================
+        // 已經有綁定資料
+        // ======================================================
 
         showMainSection();
 
