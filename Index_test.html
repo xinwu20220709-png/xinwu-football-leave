@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,1570 +6,190 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>新屋足球俱樂部 - 請假與補課系統</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
   <style>
-    * { box-sizing: border-box; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #f8fafc;
-      margin: 0;
-      padding: 16px;
-      color: #1e293b;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,.06);
-    }
-
-    h2 {
-      color: #4f46e5;
-      text-align: center;
-      margin: 0 0 20px;
-      font-size: 22px;
-    }
-
-    .tabs {
-      display: flex;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #e2e8f0;
-    }
-
-    .tab {
-      flex: 1;
-      text-align: center;
-      padding: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #64748b;
-      font-size: 15px;
-    }
-
-    .tab.active {
-      color: #4f46e5;
-      border-bottom: 3px solid #4f46e5;
-      margin-bottom: -2px;
-    }
-
-    .form-group { margin-bottom: 16px; }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 6px;
-      font-size: 14px;
-      color: #475569;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 15px;
-      background: #fff;
-    }
-
-    textarea { resize: vertical; }
-
-    button {
-      width: 100%;
-      background: #4f46e5;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-
-    button:hover { background: #4338ca; }
-
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .hidden { display: none !important; }
-
-    .notice {
-      background: #eef2ff;
-      border-left: 4px solid #4f46e5;
-      padding: 12px;
-      font-size: 13px;
-      margin-bottom: 16px;
-      border-radius: 4px;
-      color: #3730a3;
-      line-height: 1.5;
-    }
-
-    .member-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .member-header-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .member-header-left label {
-      margin: 0;
-      font-size: 15px;
-      color: #334155;
-    }
-
-    .member-count {
-      color: #64748b;
-      font-size: 13px;
-      font-weight: normal;
-      white-space: nowrap;
-    }
-
-    .add-member-button {
-      width: auto;
-      margin: 0;
-      padding: 6px 12px;
-      border-radius: 7px;
-      background: #10b981;
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .add-member-button:hover { background: #059669; }
-
-    .add-member-box {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 18px;
-    }
-
-    .add-member-title {
-      font-size: 15px;
-      font-weight: bold;
-      color: #166534;
-      margin-bottom: 12px;
-    }
-
-    .add-member-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .add-member-actions button {
-      flex: 1;
-      margin-top: 0;
-    }
-
-    .cancel-button {
-      background: #e2e8f0;
-      color: #475569;
-    }
-
-    .cancel-button:hover { background: #cbd5e1; }
-
-    .confirm-add-button { background: #10b981; }
-    .confirm-add-button:hover { background: #059669; }
-
-    .history-card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 13px;
-    }
-
-    .history-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .history-content {
-      flex: 1;
-      min-width: 0;
-      line-height: 1.6;
-    }
-
-    .delete-leave-button {
-      width: auto;
-      flex: 0 0 auto;
-      margin: 0;
-      padding: 5px 9px;
-      border-radius: 6px;
-      background: #ef4444;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .delete-leave-button:hover { background: #dc2626; }
-
-    .error-box {
-      background: #fef2f2;
-      border-left: 4px solid #ef4444;
-      padding: 12px;
-      font-size: 13px;
-      margin-top: 12px;
-      border-radius: 4px;
-      color: #991b1b;
-      line-height: 1.5;
-      word-break: break-word;
-    }
-
-    hr {
-      margin: 20px 0;
-      border: 0;
-      border-top: 1px solid #e2e8f0;
-    }
+    *{box-sizing:border-box} body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8fafc;margin:0;padding:16px;color:#1e293b}.container{max-width:500px;margin:0 auto;background:#fff;padding:24px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.06)}h2{color:#4f46e5;text-align:center;margin:0 0 20px;font-size:22px}.tabs{display:flex;margin-bottom:20px;border-bottom:2px solid #e2e8f0}.tab{flex:1;text-align:center;padding:10px;cursor:pointer;font-weight:bold;color:#64748b;font-size:15px}.tab.active{color:#4f46e5;border-bottom:3px solid #4f46e5;margin-bottom:-2px}.form-group{margin-bottom:16px}label{display:block;font-weight:600;margin-bottom:6px;font-size:14px;color:#475569}input,select,textarea{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;background:#fff}textarea{resize:vertical}button{width:100%;background:#4f46e5;color:#fff;border:none;padding:12px;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:8px}button:hover{background:#4338ca}button:disabled{opacity:.6;cursor:not-allowed}.hidden{display:none!important}.notice{background:#eef2ff;border-left:4px solid #4f46e5;padding:12px;font-size:13px;margin-bottom:16px;border-radius:4px;color:#3730a3;line-height:1.5}.member-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}.member-header-left{display:flex;align-items:center;gap:8px}.member-header-left label{margin:0;font-size:15px;color:#334155}.member-count{color:#64748b;font-size:13px;white-space:nowrap}.add-member-button{width:auto;margin:0;padding:6px 12px;border-radius:7px;background:#10b981;font-size:13px}.add-member-button:hover{background:#059669}.add-member-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;margin-bottom:18px}.add-member-title{font-size:15px;font-weight:bold;color:#166534;margin-bottom:12px}.add-member-actions{display:flex;gap:8px}.add-member-actions button{flex:1;margin-top:0}.cancel-button{background:#e2e8f0;color:#475569}.cancel-button:hover{background:#cbd5e1}.confirm-add-button{background:#10b981}.confirm-add-button:hover{background:#059669}.history-card{background:#f8fafc;border:1px solid #e2e8f0;padding:12px;border-radius:8px;margin-bottom:8px;font-size:13px}.history-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.history-content{flex:1;min-width:0;line-height:1.6}.delete-leave-button{width:auto;flex:0 0 auto;margin:0;padding:5px 9px;border-radius:6px;background:#ef4444;font-size:12px}.delete-leave-button:hover{background:#dc2626}.error-box{background:#fef2f2;border-left:4px solid #ef4444;padding:12px;font-size:13px;margin-top:12px;border-radius:4px;color:#991b1b;line-height:1.5;word-break:break-word}.login-button{background:#06c755;margin-top:12px}.login-button:hover{background:#05b34d}hr{margin:20px 0;border:0;border-top:1px solid #e2e8f0}
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <h2>⚽ 新屋足球俱樂部</h2>
+<div class="container">
+  <h2>⚽ 新屋足球俱樂部</h2>
+  <div id="loading" style="text-align:center;padding:30px;color:#64748b">載入中，正在確認您的 LINE 身分...</div>
 
-    <div id="loading" style="text-align:center;padding:30px;color:#64748b;">
-      載入中，正在確認您的 LINE 身分...
-    </div>
-
-    <!-- 第一次綁定 -->
-    <div id="bind-section" class="hidden">
-      <div class="notice">
-        您好！這是您第一次使用本系統。<br>
-        為了方便您之後直接點開就能使用，<br>
-        請先簡單綁定學員資料。
-      </div>
-
-      <div class="form-group">
-        <label>學員姓名</label>
-        <input type="text" id="bind-student" placeholder="例如：王小明">
-      </div>
-
-      <div class="form-group">
-        <label>您與學員的關係</label>
-        <select id="bind-relation" onchange="handleRelationChange()">
-          <option value="爸爸">爸爸</option>
-          <option value="媽媽">媽媽</option>
-          <option value="阿公">阿公</option>
-          <option value="阿嬤">阿嬤</option>
-          <option value="其他">其他（自行填寫）</option>
-        </select>
-      </div>
-
-      <div class="form-group hidden" id="bind-other-relation-group">
-        <label>請填寫您與學員的關係</label>
-        <input type="text" id="bind-other-relation" placeholder="例如：阿姨、叔叔、朋友、監護人" maxlength="20">
-      </div>
-
-      <button onclick="handleBind()">完成綁定並進入</button>
-    </div>
-
-    <!-- 主系統 -->
-    <div id="main-section" class="hidden">
-      <div class="notice" id="user-info-text"></div>
-
-      <div class="tabs">
-        <div class="tab active" onclick="switchTab('leave')">請假申請</div>
-        <div class="tab" onclick="switchTab('makeup')">預約補課</div>
-      </div>
-
-      <!-- 成員選擇 -->
-      <div class="form-group">
-        <div class="member-header">
-          <div class="member-header-left">
-            <label>選擇成員</label>
-            <span class="member-count" id="member-count">目前 0 位成員</span>
-          </div>
-
-          <button type="button" class="add-member-button" onclick="showAddMember()">＋新增</button>
-        </div>
-
-        <select id="student-select" onchange="onStudentChange()"></select>
-      </div>
-
-      <!-- 新增成員 -->
-      <div id="add-member-box" class="add-member-box hidden">
-        <div class="add-member-title">＋ 新增成員</div>
-
-        <div class="form-group">
-          <label>學員姓名</label>
-          <input type="text" id="add-student" placeholder="例如：王小明">
-        </div>
-
-        <div class="form-group">
-          <label>您與學員的關係</label>
-          <select id="add-relation" onchange="handleAddRelationChange()">
-            <option value="爸爸">爸爸</option>
-            <option value="媽媽">媽媽</option>
-            <option value="阿公">阿公</option>
-            <option value="阿嬤">阿嬤</option>
-            <option value="其他">其他（自行填寫）</option>
-          </select>
-        </div>
-
-        <div class="form-group hidden" id="add-other-relation-group">
-          <label>請填寫您與學員的關係</label>
-          <input type="text" id="add-other-relation" placeholder="例如：阿姨、叔叔、朋友、監護人" maxlength="20">
-        </div>
-
-        <div class="add-member-actions">
-          <button type="button" class="cancel-button" onclick="cancelAddMember()">取消</button>
-          <button type="button" class="confirm-add-button" onclick="handleAddMember()">確認新增</button>
-        </div>
-      </div>
-
-      <!-- 請假 -->
-      <div id="leave-form-pane">
-        <div class="form-group">
-          <label>請假日期</label>
-          <input type="date" id="leave-date">
-        </div>
-
-        <div class="form-group">
-          <label>請假原因 / 備註</label>
-          <textarea id="leave-remark" rows="2" placeholder="若有特殊狀況請在此說明"></textarea>
-        </div>
-
-        <button onclick="submitLeave()">送出請假申請</button>
-      </div>
-
-      <!-- 補課 -->
-      <div id="makeup-form-pane" class="hidden">
-        <div class="form-group">
-          <label>📌 選擇要抵扣的原請假日期（對應缺課）</label>
-          <select id="makeup-original-date">
-            <option value="">-- 請先選擇請假紀錄 --</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>預約補課日期</label>
-          <input type="date" id="makeup-date">
-        </div>
-
-        <div class="form-group">
-          <label>選擇補課時段</label>
-          <select id="makeup-slot-select" onchange="handleSlotChange()">
-            <option value="">-- 請選擇補課時段 --</option>
-            <option value="團體班2">團體班2</option>
-            <option value="團體班3">團體班3</option>
-            <option value="團體班4">團體班4</option>
-            <option value="團體班6">團體班6</option>
-            <option value="其他">其他（自行填寫）</option>
-          </select>
-        </div>
-
-        <div class="form-group hidden" id="makeup-other-group">
-          <label>請輸入其他補課時段 / 備註</label>
-          <input type="text" id="makeup-other-input" placeholder="例如：一對一特訓班">
-        </div>
-
-        <button onclick="submitMakeup()" style="background:#0ea5e9;">送出補課預約</button>
-      </div>
-
-      <!-- 歷史紀錄 -->
-      <div style="margin-top:24px;">
-        <hr>
-
-        <h3 id="history-title" style="font-size:15px;color:#334155;margin-bottom:10px;">
-          📋 近期請假紀錄
-        </h3>
-
-        <div id="history-list">尚無紀錄</div>
-      </div>
-    </div>
+  <div id="bind-section" class="hidden">
+    <div class="notice">您好！這是您第一次使用本系統。<br>請先簡單綁定學員資料，之後即可直接使用。</div>
+    <div class="form-group"><label>學員姓名</label><input type="text" id="bind-student" placeholder="例如：王小明"></div>
+    <div class="form-group"><label>您與學員的關係</label><select id="bind-relation" onchange="handleRelationChange()"><option value="爸爸">爸爸</option><option value="媽媽">媽媽</option><option value="阿公">阿公</option><option value="阿嬤">阿嬤</option><option value="其他">其他（自行填寫）</option></select></div>
+    <div class="form-group hidden" id="bind-other-relation-group"><label>請填寫您與學員的關係</label><input type="text" id="bind-other-relation" maxlength="20" placeholder="例如：阿姨、叔叔、監護人"></div>
+    <button onclick="handleBind()">完成綁定並進入</button>
   </div>
 
-  <script>
-    // ==========================================================
-    // 全域設定
-    // ==========================================================
-
-    const LIFF_ID = "2011307172-d3esgseq";
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwJYszBcuHQ-BkR5k9NyUJJ3W-1F78dK4XP_epIaFrwtnv9sosk13ZR_7-iFvFmUmfU/exec";
-    const GAS_API_CHANNEL = "NEW屋_SOCCER_GAS_API";
-
-    let lineIdToken = "";
-    let userLineId = "";
-    let userBindings = [];
-    let currentTab = "leave";
-    let liffInitialized = false;
-    let tokenRefreshing = null;
-    const pendingApiRequests = new Map();
-
-    // ==========================================================
-    // 取得目前有效的 LINE ID Token
-    // ==========================================================
-
-    async function getCurrentLineIdToken() {
-      if (typeof liff === "undefined") {
-        throw new Error("LIFF SDK 尚未載入。");
-      }
-
-      if (!liffInitialized) {
-        await liff.init({
-          liffId: LIFF_ID,
-          withLoginOnExternalBrowser: true
-        });
-        liffInitialized = true;
-      }
-
-      if (!liff.isLoggedIn()) {
-        if (!liff.isInClient()) {
-          liff.login();
-          throw new Error("LINE 登入狀態已失效，正在重新登入。");
-        }
-
-        throw new Error("LINE 登入狀態已失效，請重新開啟系統。");
-      }
-
-      const token = liff.getIDToken();
-
-      if (!token) {
-        throw new Error("無法取得 LINE ID Token，請重新開啟系統。");
-      }
-
-      lineIdToken = String(token);
-      return lineIdToken;
-    }
-
-    // ==========================================================
-    // 重新初始化 LIFF 並取得新 Token
-    //
-    // ID Token 有效期為 1 小時。
-    // 如果 GAS 回覆 IdToken expired，就重新初始化並重試一次。
-    // ==========================================================
-
-    async function refreshLineIdToken() {
-      if (tokenRefreshing) {
-        return tokenRefreshing;
-      }
-
-      tokenRefreshing = (async function() {
-        if (typeof liff === "undefined") {
-          throw new Error("LIFF SDK 尚未載入。");
-        }
-
-        if (!liff.isLoggedIn()) {
-          if (!liff.isInClient()) {
-            liff.login();
-            throw new Error("LINE 登入狀態已失效，正在重新登入。");
-          }
-
-          throw new Error("LINE 登入狀態已失效，請重新開啟系統。");
-        }
-
-        // 重新執行 LIFF 初始化，讓 SDK 重新取得目前的 Token 狀態。
-        await liff.init({
-          liffId: LIFF_ID,
-          withLoginOnExternalBrowser: true
-        });
-
-        liffInitialized = true;
-
-        const newToken = liff.getIDToken();
-
-        if (!newToken) {
-          throw new Error("重新取得 LINE ID Token 失敗，請重新開啟系統。");
-        }
-
-        lineIdToken = String(newToken);
-
-        return lineIdToken;
-      })();
-
-      try {
-        return await tokenRefreshing;
-      } finally {
-        tokenRefreshing = null;
-      }
-    }
-
-    // ==========================================================
-    // 判斷是否為 Token 過期錯誤
-    // ==========================================================
-
-    function isExpiredTokenError(err) {
-      const message = String(
-        err && err.message ? err.message : err || ""
-      ).toLowerCase();
-
-      return (
-        message.includes("idtoken expired") ||
-        message.includes("id token expired") ||
-        message.includes("token expired") ||
-        message.includes("invalid id token") ||
-        message.includes("invalid_id_token")
-      );
-    }
-
-    // ==========================================================
-    // 接收 GAS API 回傳
-    // ==========================================================
-
-    window.addEventListener("message", function(event) {
-      const message = event && event.data;
-
-      if (!message || message.channel !== GAS_API_CHANNEL) {
-        return;
-      }
-
-      const pending = pendingApiRequests.get(message.requestId);
-
-      if (!pending) {
-        return;
-      }
-
-      pendingApiRequests.delete(message.requestId);
-
-      if (pending.iframe && pending.iframe.parentNode) {
-        pending.iframe.parentNode.removeChild(pending.iframe);
-      }
-
-      if (message.response && message.response.ok) {
-        pending.resolve(message.response.data);
-      } else {
-        pending.reject(
-          new Error(
-            message.response && message.response.error
-              ? message.response.error
-              : "GAS API 發生未知錯誤。"
-          )
-        );
-      }
-    });
-
-    // ==========================================================
-    // 實際送出 GAS API
-    // ==========================================================
-
-    function sendGasApiRequest(action, payload) {
-      return new Promise(function(resolve, reject) {
-        const requestId =
-          "req_" +
-          Date.now().toString(36) +
-          "_" +
-          Math.random().toString(36).slice(2);
-
-        const iframe = document.createElement("iframe");
-        iframe.name = requestId;
-        iframe.style.display = "none";
-        iframe.setAttribute("aria-hidden", "true");
-        document.body.appendChild(iframe);
-
-        pendingApiRequests.set(requestId, {
-          resolve,
-          reject,
-          iframe
-        });
-
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = GAS_API_URL;
-        form.target = requestId;
-        form.style.display = "none";
-
-        const requestInput = document.createElement("input");
-        requestInput.type = "hidden";
-        requestInput.name = "requestId";
-        requestInput.value = requestId;
-
-        const payloadInput = document.createElement("input");
-        payloadInput.type = "hidden";
-        payloadInput.name = "payload";
-        payloadInput.value = JSON.stringify(
-          Object.assign({}, payload || {}, { action })
-        );
-
-        form.appendChild(requestInput);
-        form.appendChild(payloadInput);
-        document.body.appendChild(form);
-
-        form.submit();
-        form.remove();
-
-        setTimeout(function() {
-          const pendingRequest = pendingApiRequests.get(requestId);
-
-          if (!pendingRequest) {
-            return;
-          }
-
-          pendingApiRequests.delete(requestId);
-
-          if (iframe.parentNode) {
-            iframe.parentNode.removeChild(iframe);
-          }
-
-          reject(
-            new Error("伺服器回應逾時，請確認 GAS Web App 已重新部署。")
-          );
-        }, 30000);
-      });
-    }
-
-    // ==========================================================
-    // GAS API
-    //
-    // 重點：
-    // 每次 API 呼叫前都取得目前 ID Token。
-    // 如果第一次收到 expired，再重新初始化 LIFF 並重試一次。
-    // ==========================================================
-
-    async function callGasApi(action, payload) {
-      const requestPayload = Object.assign({}, payload || {});
-
-      requestPayload.idToken = await getCurrentLineIdToken();
-
-      try {
-        return await sendGasApiRequest(action, requestPayload);
-      } catch (err) {
-        if (!isExpiredTokenError(err)) {
-          throw err;
-        }
-
-        console.warn("LINE ID Token 已過期，正在重新取得 Token...", err);
-
-        requestPayload.idToken = await refreshLineIdToken();
-
-        return await sendGasApiRequest(action, requestPayload);
-      }
-    }
-
-    // ==========================================================
-    // 頁面載入
-    // ==========================================================
-
-    window.addEventListener("load", initSystem);
-
-   async function initSystem() {
-  const loading = document.getElementById("loading");
-
-  try {
-    if (typeof liff === "undefined") {
-      throw new Error("LIFF SDK 尚未載入。");
-    }
-
-    loading.innerHTML = "正在初始化 LINE 身分...";
-
-    await liff.init({
-      liffId: "2011307172-d3esgseq",
-      withLoginOnExternalBrowser: true
-    });
-
-    console.log(
-      "LIFF 初始化成功",
-      "版本：", liff.getVersion(),
-      "LINE App：", liff.isInClient(),
-      "登入：", liff.isLoggedIn()
-    );
-
-    /*
-     * ------------------------------------------------------------
-     * 外部瀏覽器如果尚未登入
-     * 讓 LIFF 自動進入 LINE Login
-     * ------------------------------------------------------------
-     */
-    if (!liff.isInClient() && !liff.isLoggedIn()) {
-      loading.innerHTML = "正在前往 LINE 登入...";
-      liff.login({
-        redirectUri: window.location.href
-      });
-      return;
-    }
-
-    /*
-     * ------------------------------------------------------------
-     * 取得新的 ID Token
-     * ------------------------------------------------------------
-     */
-    loading.innerHTML = "正在取得 LINE 身分驗證資訊...";
-
-    const idToken = liff.getIDToken();
-
-    if (!idToken) {
-      throw new Error(
-        "無法取得 LINE ID Token。請重新登入 LINE。"
-      );
-    }
-
-    lineIdToken = String(idToken);
-
-    console.log(
-      "已取得 LINE ID Token"
-    );
-
-    /*
-     * ------------------------------------------------------------
-     * 第一次驗證 LINE 身分
-     * ------------------------------------------------------------
-     */
-    loading.innerHTML = "正在驗證 LINE 身分...";
-
-    let verifiedUser;
-
-    try {
-      verifiedUser = await callGasApi(
-        "verifyLineIdToken",
-        {
-          idToken: lineIdToken
-        }
-      );
-
-    } catch (verifyError) {
-
-      const errorMessage =
-        verifyError && verifyError.message
-          ? String(verifyError.message)
-          : String(verifyError);
-
-      console.error(
-        "LINE ID Token 驗證失敗：",
-        errorMessage
-      );
-
-      /*
-       * ----------------------------------------------------------
-       * ★ 核心修正
-       *
-       * 如果 Chrome / Edge 保存的是舊 Token，
-       * 伺服器會回傳：
-       *
-       * HTTP 400
-       * IdToken expired
-       *
-       * 此時不要直接顯示錯誤。
-       * 清掉 LIFF 登入狀態，再重新 LINE Login。
-       * ----------------------------------------------------------
-       */
-      if (
-        errorMessage.includes("IdToken expired") ||
-        errorMessage.includes("id_token expired") ||
-        errorMessage.includes("expired")
-      ) {
-
-        const reloginKey =
-          "newwu_liff_relogin_attempt";
-
-        const alreadyRelogin =
-          sessionStorage.getItem(
-            reloginKey
-          );
-
-        /*
-         * 避免登入失敗後無限迴圈
-         */
-        if (!alreadyRelogin) {
-
-          sessionStorage.setItem(
-            reloginKey,
-            "1"
-          );
-
-          console.warn(
-            "ID Token 已過期，重新進行 LINE Login..."
-          );
-
-          try {
-            if (liff.isLoggedIn()) {
-              liff.logout();
-            }
-          } catch (logoutError) {
-            console.warn(
-              "LIFF logout 發生錯誤：",
-              logoutError
-            );
-          }
-
-          loading.innerHTML =
-            "登入資訊已過期，正在重新登入 LINE...";
-
-          setTimeout(function() {
-            liff.login({
-              redirectUri: window.location.href
-            });
-          }, 300);
-
-          return;
-        }
-
-        /*
-         * 如果已經重新登入過一次還是失敗，
-         * 清掉旗標，避免一直轉圈。
-         */
-        sessionStorage.removeItem(
-          reloginKey
-        );
-      }
-
-      throw verifyError;
-    }
-
-    /*
-     * ------------------------------------------------------------
-     * 驗證成功
-     * ------------------------------------------------------------
-     */
-    sessionStorage.removeItem(
-      "newwu_liff_relogin_attempt"
-    );
-
-    if (
-      !verifiedUser ||
-      !verifiedUser.userId
-    ) {
-      throw new Error(
-        "伺服器沒有回傳有效的 LINE User ID。"
-      );
-    }
-
-    userLineId =
-      String(
-        verifiedUser.userId
-      ).trim();
-
-    console.log(
-      "LINE User ID 已由 LINE Platform 驗證取得：",
-      userLineId
-    );
-
-    /*
-     * ------------------------------------------------------------
-     * 查詢會員綁定
-     * ------------------------------------------------------------
-     */
-    loading.innerHTML =
-      "正在確認您的會員資料...";
-
-    const bindings =
-      await callGasApi(
-        "checkLineId",
-        {
-          idToken: lineIdToken
-        }
-      );
-
-    onCheckBindResult(
-      bindings
-    );
-
-  } catch (err) {
-
-    console.error(
-      "LIFF / API ERROR:",
-      err
-    );
-
-    showError(
-      "LINE 身分確認失敗",
-      err && err.message
-        ? err.message
-        : err
-    );
+  <div id="main-section" class="hidden">
+    <div class="notice" id="user-info-text"></div>
+    <div class="tabs"><div class="tab active" onclick="switchTab('leave')">請假申請</div><div class="tab" onclick="switchTab('makeup')">預約補課</div></div>
+
+    <div class="form-group">
+      <div class="member-header"><div class="member-header-left"><label>選擇成員</label><span class="member-count" id="member-count">目前 0 位成員</span></div><button type="button" class="add-member-button" onclick="showAddMember()">＋新增</button></div>
+      <select id="student-select" onchange="onStudentChange()"></select>
+    </div>
+
+    <div id="add-member-box" class="add-member-box hidden">
+      <div class="add-member-title">＋ 新增成員</div>
+      <div class="form-group"><label>學員姓名</label><input type="text" id="add-student" placeholder="例如：王小明"></div>
+      <div class="form-group"><label>您與學員的關係</label><select id="add-relation" onchange="handleAddRelationChange()"><option value="爸爸">爸爸</option><option value="媽媽">媽媽</option><option value="阿公">阿公</option><option value="阿嬤">阿嬤</option><option value="其他">其他（自行填寫）</option></select></div>
+      <div class="form-group hidden" id="add-other-relation-group"><label>請填寫您與學員的關係</label><input type="text" id="add-other-relation" maxlength="20" placeholder="例如：阿姨、叔叔、監護人"></div>
+      <div class="add-member-actions"><button type="button" class="cancel-button" onclick="cancelAddMember()">取消</button><button type="button" class="confirm-add-button" onclick="handleAddMember()">確認新增</button></div>
+    </div>
+
+    <div id="leave-form-pane">
+      <div class="form-group"><label>請假日期</label><input type="date" id="leave-date"></div>
+      <div class="form-group"><label>請假原因 / 備註</label><textarea id="leave-remark" rows="2" placeholder="若有特殊狀況請在此說明"></textarea></div>
+      <button onclick="submitLeave()">送出請假申請</button>
+    </div>
+
+    <div id="makeup-form-pane" class="hidden">
+      <div class="form-group"><label>📌 選擇要抵扣的原請假日期（對應缺課）</label><select id="makeup-original-date"><option value="">-- 請先選擇請假紀錄 --</option></select></div>
+      <div class="form-group"><label>預約補課日期</label><input type="date" id="makeup-date"></div>
+      <div class="form-group"><label>選擇補課時段</label><select id="makeup-slot-select" onchange="handleSlotChange()"><option value="">-- 請選擇補課時段 --</option><option value="團體班2">團體班2</option><option value="團體班3">團體班3</option><option value="團體班4">團體班4</option><option value="團體班6">團體班6</option><option value="其他">其他（自行填寫）</option></select></div>
+      <div class="form-group hidden" id="makeup-other-group"><label>請輸入其他補課時段 / 備註</label><input type="text" id="makeup-other-input" placeholder="例如：一對一特訓班"></div>
+      <button onclick="submitMakeup()" style="background:#0ea5e9">送出補課預約</button>
+    </div>
+
+    <div style="margin-top:24px"><hr><h3 id="history-title" style="font-size:15px;color:#334155;margin-bottom:10px">📋 近期請假紀錄</h3><div id="history-list">尚無紀錄</div></div>
+  </div>
+</div>
+
+<script>
+const LIFF_ID="2011307172-d3esgseq";
+const GAS_API_URL="https://script.google.com/macros/s/AKfycbwJYszBcuHQ-BkR5k9NyUJJ3W-1F78dK4XP_epIaFrwtnv9sosk13ZR_7-iFvFmUmfU/exec";
+const GAS_API_CHANNEL="NEW屋_SOCCER_GAS_API";
+const RELOGIN_KEY="newwu_liff_relogin_attempt_v2";
+let lineIdToken="",userLineId="",userBindings=[],currentTab="leave",liffInitialized=false,reloginInProgress=false;
+const pendingApiRequests=new Map();
+
+window.addEventListener("message",function(event){
+  const m=event&&event.data;if(!m||m.channel!==GAS_API_CHANNEL)return;
+  const p=pendingApiRequests.get(m.requestId);if(!p)return;
+  pendingApiRequests.delete(m.requestId);clearTimeout(p.timer);
+  if(p.iframe&&p.iframe.parentNode)p.iframe.parentNode.removeChild(p.iframe);
+  if(m.response&&m.response.ok)p.resolve(m.response.data);else p.reject(new Error(m.response&&m.response.error?m.response.error:"GAS API 發生未知錯誤。"));
+});
+
+function sendGasApiRequest(action,payload){return new Promise(function(resolve,reject){
+  const requestId="req_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2);
+  const iframe=document.createElement("iframe");iframe.name=requestId;iframe.style.display="none";iframe.setAttribute("aria-hidden","true");document.body.appendChild(iframe);
+  const form=document.createElement("form");form.method="POST";form.action=GAS_API_URL;form.target=requestId;form.style.display="none";
+  const a=document.createElement("input");a.type="hidden";a.name="requestId";a.value=requestId;
+  const b=document.createElement("input");b.type="hidden";b.name="payload";b.value=JSON.stringify(Object.assign({},payload||{},{action:action}));
+  form.appendChild(a);form.appendChild(b);document.body.appendChild(form);
+  const timer=setTimeout(function(){const p=pendingApiRequests.get(requestId);if(!p)return;pendingApiRequests.delete(requestId);if(iframe.parentNode)iframe.parentNode.removeChild(iframe);reject(new Error("伺服器回應逾時，請確認 GAS Web App 已重新部署。"));},30000);
+  pendingApiRequests.set(requestId,{resolve:resolve,reject:reject,iframe:iframe,timer:timer});form.submit();form.remove();
+});}
+
+function isExpiredTokenError(err){const s=String(err&&err.message?err.message:err||"").toLowerCase();return s.includes("idtoken expired")||s.includes("id token expired")||s.includes("token expired")||s.includes("invalid id token")||s.includes("invalid_id_token");}
+
+async function ensureLiffInitialized(){
+  if(typeof liff==="undefined")throw new Error("LIFF SDK 尚未載入。");
+  if(!liffInitialized){await liff.init({liffId:LIFF_ID,withLoginOnExternalBrowser:true});liffInitialized=true;}
+}
+
+function getReloginRedirectUri(){
+  const params=new URLSearchParams(location.search);const state=params.get("liff.state");
+  if(state){try{return new URL("."+state,location.href).toString();}catch(e){}}
+  return location.href.split("#")[0];
+}
+
+async function forceLineLogin(reason){
+  if(reloginInProgress)return;
+  reloginInProgress=true;
+  sessionStorage.setItem(RELOGIN_KEY,"1");
+  const loading=document.getElementById("loading");
+  loading.classList.remove("hidden");
+  loading.innerHTML="<div>LINE 登入資訊已過期。<br>正在清除舊登入狀態並重新登入...<br><small>若沒有自動跳轉，請按重新登入。</small></div><button class='login-button' onclick='manualLineLogin()'>重新登入 LINE</button>";
+  try{if(liff.isLoggedIn()&&!liff.isInClient())liff.logout();}catch(e){console.warn("liff.logout:",e)}
+  setTimeout(function(){manualLineLogin();},500);
+}
+
+function manualLineLogin(){
+  try{sessionStorage.setItem(RELOGIN_KEY,"1");const uri=getReloginRedirectUri();if(!liff.isInClient())liff.login({redirectUri:uri});else location.reload();}catch(e){showError("LINE 登入失敗",e.message||e);}
+}
+
+async function getCurrentLineIdToken(){
+  await ensureLiffInitialized();
+  if(!liff.isLoggedIn()){
+    if(!liff.isInClient()){liff.login({redirectUri:getReloginRedirectUri()});throw new Error("正在重新登入 LINE...");}
+    throw new Error("LINE 登入狀態已失效，請重新開啟系統。");
+  }
+  const token=liff.getIDToken();
+  if(!token)throw new Error("無法取得 LINE ID Token，請重新登入 LINE。");
+  lineIdToken=String(token);return lineIdToken;
+}
+
+async function callGasApi(action,payload){
+  const body=Object.assign({},payload||{});body.idToken=await getCurrentLineIdToken();
+  try{return await sendGasApiRequest(action,body);}catch(err){
+    if(!isExpiredTokenError(err))throw err;
+    console.warn("LINE ID Token expired，重新登入",err);
+    await forceLineLogin(err);throw new Error("IdToken expired，正在重新登入 LINE...");
   }
 }
 
-    // ==========================================================
-    // 顯示錯誤
-    // ==========================================================
-
-    function showError(title, message) {
-      const loading = document.getElementById("loading");
-
-      loading.innerHTML =
-        "<div class='error-box'>" +
-        "<b>❌ " + escapeHtml(title) + "</b><br><br>" +
-        escapeHtml(String(message)) +
-        "</div>";
-    }
-
-    // ==========================================================
-    // HTML Escape
-    // ==========================================================
-
-    function escapeHtml(value) {
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    // ==========================================================
-    // GAS 伺服器錯誤
-    // ==========================================================
-
-    function onServerFail(err) {
-      console.error("Server Error:", err);
-
-      showError(
-        "伺服器連線發生錯誤",
-        err && err.message ? err.message : err
-      );
-    }
-
-    // ==========================================================
-    // 第一次綁定：關係選擇
-    // ==========================================================
-
-    function handleRelationChange() {
-      const relation = document.getElementById("bind-relation").value;
-      const otherGroup = document.getElementById("bind-other-relation-group");
-      const otherInput = document.getElementById("bind-other-relation");
-
-      if (relation === "其他") {
-        otherGroup.classList.remove("hidden");
-        otherInput.focus();
-      } else {
-        otherGroup.classList.add("hidden");
-        otherInput.value = "";
-      }
-    }
-
-    // ==========================================================
-    // 第一次綁定
-    // ==========================================================
-
-    async function handleBind() {
-      const studentName = document.getElementById("bind-student").value.trim();
-      let relation = document.getElementById("bind-relation").value;
-
-      if (relation === "其他") {
-        const otherRelation = document
-          .getElementById("bind-other-relation")
-          .value
-          .trim();
-
-        if (!otherRelation) {
-          alert("請填寫您與學員的關係！");
-          return;
-        }
-
-        relation = otherRelation;
-      }
-
-      if (!studentName) {
-        alert("請輸入學員姓名！");
-        return;
-      }
-
-      try {
-        await getCurrentLineIdToken();
-
-        await callGasApi("registerUser", {
-          idToken: lineIdToken,
-          studentName,
-          relation
-        });
-
-        alert("綁定成功！");
-
-        userBindings.push({
-          studentName,
-          relation
-        });
-
-        document.getElementById("bind-section").classList.add("hidden");
-        showMainSection();
-      } catch (err) {
-        alert(
-          "綁定失敗：" +
-          (err && err.message ? err.message : err)
-        );
-      }
-    }
-
-    // ==========================================================
-    // 顯示主畫面
-    // ==========================================================
-
-    function showMainSection() {
-      document.getElementById("main-section").classList.remove("hidden");
-
-      updateMemberSelect();
-
-      document.getElementById("user-info-text").innerText =
-        "👋 您好，系統已自動確認您的 LINE 身分。";
-
-      onStudentChange();
-    }
-
-    // ==========================================================
-    // 更新成員選單
-    // ==========================================================
-
-    function updateMemberSelect() {
-      const select = document.getElementById("student-select");
-      const currentStudent = select.value;
-
-      select.innerHTML = "";
-
-      userBindings.forEach(function(binding) {
-        const opt = document.createElement("option");
-        opt.value = binding.studentName;
-        opt.text =
-          binding.studentName +
-          "（" +
-          binding.relation +
-          "）";
-
-        select.appendChild(opt);
-      });
-
-      if (
-        currentStudent &&
-        userBindings.some(function(binding) {
-          return binding.studentName === currentStudent;
-        })
-      ) {
-        select.value = currentStudent;
-      }
-
-      if (!select.value && userBindings.length > 0) {
-        select.selectedIndex = 0;
-      }
-
-      updateMemberCount();
-    }
-
-    // ==========================================================
-    // 更新成員數量
-    // ==========================================================
-
-    function updateMemberCount() {
-      const countElement = document.getElementById("member-count");
-
-      if (!countElement) {
-        return;
-      }
-
-      countElement.innerText =
-        "目前 " +
-        userBindings.length +
-        " 位成員";
-    }
-
-    // ==========================================================
-    // 顯示新增成員
-    // ==========================================================
-
-    function showAddMember() {
-      const box = document.getElementById("add-member-box");
-      box.classList.remove("hidden");
-      document.getElementById("add-student").focus();
-    }
-
-    // ==========================================================
-    // 取消新增成員
-    // ==========================================================
-
-    function cancelAddMember() {
-      clearAddMemberForm();
-      document.getElementById("add-member-box").classList.add("hidden");
-    }
-
-    // ==========================================================
-    // 清除新增成員表單
-    // ==========================================================
-
-    function clearAddMemberForm() {
-      document.getElementById("add-student").value = "";
-      document.getElementById("add-relation").value = "爸爸";
-      document.getElementById("add-other-relation").value = "";
-      document.getElementById("add-other-relation-group").classList.add("hidden");
-    }
-
-    // ==========================================================
-    // 新增成員：關係選擇
-    // ==========================================================
-
-    function handleAddRelationChange() {
-      const relation = document.getElementById("add-relation").value;
-      const otherGroup = document.getElementById("add-other-relation-group");
-      const otherInput = document.getElementById("add-other-relation");
-
-      if (relation === "其他") {
-        otherGroup.classList.remove("hidden");
-        otherInput.focus();
-      } else {
-        otherGroup.classList.add("hidden");
-        otherInput.value = "";
-      }
-    }
-
-    // ==========================================================
-    // 新增第二、第三位成員
-    // ==========================================================
-
-    async function handleAddMember() {
-      const studentName = document.getElementById("add-student").value.trim();
-      let relation = document.getElementById("add-relation").value;
-
-      if (relation === "其他") {
-        const otherRelation = document
-          .getElementById("add-other-relation")
-          .value
-          .trim();
-
-        if (!otherRelation) {
-          alert("請填寫您與學員的關係！");
-          return;
-        }
-
-        relation = otherRelation;
-      }
-
-      if (!studentName) {
-        alert("請輸入學員姓名！");
-        return;
-      }
-
-      const alreadyExists = userBindings.some(function(binding) {
-        return binding.studentName === studentName;
-      });
-
-      if (alreadyExists) {
-        alert("這位成員已經綁定，不需要重複新增。");
-        return;
-      }
-
-      try {
-        await getCurrentLineIdToken();
-
-        await callGasApi("registerUser", {
-          idToken: lineIdToken,
-          studentName,
-          relation
-        });
-
-        alert("新增成員成功！");
-
-        userBindings.push({
-          studentName,
-          relation
-        });
-
-        updateMemberSelect();
-
-        document.getElementById("student-select").value = studentName;
-
-        cancelAddMember();
-        onStudentChange();
-      } catch (err) {
-        alert(
-          "新增成員失敗：" +
-          (err && err.message ? err.message : err)
-        );
-      }
-    }
-
-    // ==========================================================
-    // 成員切換
-    // ==========================================================
-
-    function onStudentChange() {
-      loadHistory();
-
-      if (currentTab === "makeup") {
-        loadValidLeaveDates();
-      }
-    }
-
-    // ==========================================================
-    // 分頁
-    // ==========================================================
-
-    function switchTab(tab) {
-      currentTab = tab;
-
-      const tabs = document.querySelectorAll(".tab");
-
-      tabs.forEach(function(tabElement) {
-        tabElement.classList.remove("active");
-      });
-
-      if (tab === "leave") {
-        tabs[0].classList.add("active");
-
-        document.getElementById("leave-form-pane").classList.remove("hidden");
-        document.getElementById("makeup-form-pane").classList.add("hidden");
-
-        document.getElementById("history-title").innerText =
-          "📋 近期請假紀錄";
-      } else {
-        tabs[1].classList.add("active");
-
-        document.getElementById("makeup-form-pane").classList.remove("hidden");
-        document.getElementById("leave-form-pane").classList.add("hidden");
-
-        document.getElementById("history-title").innerText =
-          "📋 近期預約補課紀錄";
-
-        loadValidLeaveDates();
-      }
-
-      loadHistory();
-    }
-
-    // ==========================================================
-    // 補課時段
-    // ==========================================================
-
-    function handleSlotChange() {
-      const slotSelect = document.getElementById("makeup-slot-select").value;
-      const otherGroup = document.getElementById("makeup-other-group");
-
-      if (slotSelect === "其他") {
-        otherGroup.classList.remove("hidden");
-      } else {
-        otherGroup.classList.add("hidden");
-        document.getElementById("makeup-other-input").value = "";
-      }
-    }
-
-    // ==========================================================
-    // 載入歷史紀錄
-    // ==========================================================
-
-    async function loadHistory() {
-      const select = document.getElementById("student-select");
-
-      if (!select || !select.value) {
-        return;
-      }
-
-      const studentName = select.value;
-      const action =
-        currentTab === "leave"
-          ? "getLeaveHistory"
-          : "getMakeupHistory";
-
-      try {
-        const history = await callGasApi(action, {
-          idToken: lineIdToken,
-          studentName
-        });
-
-        renderHistory(history);
-      } catch (err) {
-        onServerFail(err);
-      }
-    }
-
-    // ==========================================================
-    // 顯示歷史紀錄
-    // ==========================================================
-
-    function renderHistory(history) {
-      const listDiv = document.getElementById("history-list");
-
-      if (!history || history.length === 0) {
-        listDiv.innerHTML =
-          "<div style='color:#94a3b8;font-size:13px;text-align:center;padding:10px;'>" +
-          "目前沒有相關紀錄" +
-          "</div>";
-
-        return;
-      }
-
-      let html = "";
-
-      history.forEach(function(h) {
-        let info = "";
-
-        if (currentTab === "leave") {
-          info =
-            "原因：" +
-            escapeHtml(h.reason || "無");
-        } else {
-          info =
-            "原請假日期：" +
-            escapeHtml(h.originalDate || "未指定") +
-            " | 備註：" +
-            escapeHtml(h.remark || "");
-        }
-
-        const deleteButton =
-          currentTab === "leave" &&
-          h.status === "已生效"
-            ? "<button class='delete-leave-button' onclick='deleteLeave(" +
-              JSON.stringify(h.date) +
-              ")'>刪除</button>"
-            : "";
-
-        html +=
-          "<div class='history-card'>" +
-          "<div class='history-row'>" +
-          "<div class='history-content'>" +
-          "<b>日期：" +
-          escapeHtml(h.date || "") +
-          "</b> | 狀態：" +
-          "<span style='color:#4f46e5;'>" +
-          escapeHtml(h.status || "") +
-          "</span><br>" +
-          info +
-          "</div>" +
-          deleteButton +
-          "</div>" +
-          "</div>";
-      });
-
-      listDiv.innerHTML = html;
-    }
-
-    // ==========================================================
-    // 刪除已生效請假
-    // ==========================================================
-
-    async function deleteLeave(date) {
-      const studentName = document.getElementById("student-select").value;
-
-      if (!studentName || !date) {
-        return;
-      }
-
-      const confirmed = confirm(
-        "確定要刪除 " +
-        date +
-        " 的請假紀錄嗎？\n\n刪除後將無法復原。"
-      );
-
-      if (!confirmed) {
-        return;
-      }
-
-      try {
-        await callGasApi("deleteLeaveRecord", {
-          idToken: lineIdToken,
-          studentName,
-          date
-        });
-
-        alert("請假紀錄已刪除。");
-
-        await loadHistory();
-
-        if (currentTab === "makeup") {
-          loadValidLeaveDates();
-        }
-      } catch (err) {
-        alert(
-          "刪除失敗：" +
-          (err && err.message ? err.message : err)
-        );
-      }
-    }
-
-    // ==========================================================
-    // 載入可補課的請假日期
-    // ==========================================================
-
-    async function loadValidLeaveDates() {
-      const studentName = document.getElementById("student-select").value;
-      const selectOriginal = document.getElementById("makeup-original-date");
-
-      selectOriginal.innerHTML =
-        "<option value=''>載入中...</option>";
-
-      if (!studentName) {
-        selectOriginal.innerHTML =
-          "<option value=''>-- 請先選擇成員 --</option>";
-
-        return;
-      }
-
-      try {
-        const leaves = await callGasApi("getValidLeaveDates", {
-          idToken: lineIdToken,
-          studentName
-        });
-
-        selectOriginal.innerHTML = "";
-
-        if (!leaves || leaves.length === 0) {
-          selectOriginal.innerHTML =
-            "<option value=''>⚠️ 該成員目前沒有可用的請假紀錄</option>";
-
-          return;
-        }
-
-        const defaultOpt = document.createElement("option");
-        defaultOpt.value = "";
-        defaultOpt.text = "-- 請選擇要補哪一天的缺 --";
-        selectOriginal.appendChild(defaultOpt);
-
-        leaves.forEach(function(leave) {
-          const opt = document.createElement("option");
-
-          opt.value = leave.date;
-          opt.text =
-            "📅 原請假日期：" +
-            leave.date +
-            "（原因：" +
-            (leave.reason || "無") +
-            "）";
-
-          selectOriginal.appendChild(opt);
-        });
-      } catch (err) {
-        onServerFail(err);
-      }
-    }
-
-    // ==========================================================
-    // 送出請假
-    // ==========================================================
-
-    async function submitLeave() {
-      const studentName = document.getElementById("student-select").value;
-      const date = document.getElementById("leave-date").value;
-      const remark = document.getElementById("leave-remark").value;
-
-      if (!studentName) {
-        alert("請先選擇成員！");
-        return;
-      }
-
-      if (!date) {
-        alert("請選擇請假日期！");
-        return;
-      }
-
-      const binding = userBindings.find(function(b) {
-        return b.studentName === studentName;
-      });
-
-      try {
-        await callGasApi("saveLeaveRecord", {
-          idToken: lineIdToken,
-          relation: binding ? binding.relation : "家長",
-          studentName,
-          date,
-          remark
-        });
-
-        alert("請假申請已送出！");
-
-        document.getElementById("leave-date").value = "";
-        document.getElementById("leave-remark").value = "";
-
-        loadHistory();
-      } catch (err) {
-        alert(
-          "送出失敗：" +
-          (err && err.message ? err.message : err)
-        );
-      }
-    }
-
-    // ==========================================================
-    // 送出補課
-    // ==========================================================
-
-    async function submitMakeup() {
-      const studentName = document.getElementById("student-select").value;
-      const originalDate = document.getElementById("makeup-original-date").value;
-      const date = document.getElementById("makeup-date").value;
-      const slotSelect = document.getElementById("makeup-slot-select").value;
-      const otherInput = document.getElementById("makeup-other-input").value.trim();
-
-      const remark =
-        slotSelect === "其他"
-          ? otherInput
-            ? "其他：" + otherInput
-            : "其他"
-          : slotSelect;
-
-      if (!studentName) {
-        alert("請先選擇成員！");
-        return;
-      }
-
-      if (!originalDate) {
-        alert("請選擇您要抵扣的原請假日期！");
-        return;
-      }
-
-      if (!date) {
-        alert("請選擇預約補課日期！");
-        return;
-      }
-
-      if (!slotSelect) {
-        alert("請選擇補課時段！");
-        return;
-      }
-
-      if (slotSelect === "其他" && !otherInput) {
-        alert("請填寫其他補課時段 / 備註！");
-        return;
-      }
-
-      const binding = userBindings.find(function(b) {
-        return b.studentName === studentName;
-      });
-
-      try {
-        await callGasApi("saveMakeupRecord", {
-          idToken: lineIdToken,
-          relation: binding ? binding.relation : "家長",
-          studentName,
-          originalDate,
-          date,
-          remark
-        });
-
-        alert("補課預約已送出！");
-
-        document.getElementById("makeup-date").value = "";
-        document.getElementById("makeup-slot-select").value = "";
-        document.getElementById("makeup-other-input").value = "";
-        document.getElementById("makeup-other-group").classList.add("hidden");
-
-        loadValidLeaveDates();
-        loadHistory();
-      } catch (err) {
-        alert(
-          "送出失敗：" +
-          (err && err.message ? err.message : err)
-        );
-      }
-    }
-
-    // ==========================================================
-    // LINE ID 查詢結果
-    // ==========================================================
-
-    function onCheckBindResult(result) {
-      userBindings = Array.isArray(result) ? result : [];
-
-      document.getElementById("loading").classList.add("hidden");
-
-      if (userBindings.length === 0) {
-        document.getElementById("bind-section").classList.remove("hidden");
-      } else {
-        showMainSection();
-      }
-    }
-  </script>
+window.addEventListener("load",initSystem);
+async function initSystem(){
+  const loading=document.getElementById("loading");
+  try{
+    await ensureLiffInitialized();
+    console.log("LIFF",liff.getVersion(),"inClient",liff.isInClient(),"loggedIn",liff.isLoggedIn());
+    if(!liff.isLoggedIn()){if(!liff.isInClient()){loading.innerHTML="正在前往 LINE 登入...";liff.login({redirectUri:getReloginRedirectUri()});return;}throw new Error("LINE 登入尚未完成，請重新開啟系統。");}
+    loading.innerHTML="正在取得 LINE 身分驗證資訊...";
+    lineIdToken=await getCurrentLineIdToken();
+    loading.innerHTML="正在驗證 LINE 身分...";
+    let verifiedUser;
+    try{verifiedUser=await callGasApi("verifyLineIdToken",{idToken:lineIdToken});}
+    catch(err){if(isExpiredTokenError(err)){await forceLineLogin(err);return;}throw err;}
+    if(!verifiedUser||!verifiedUser.userId)throw new Error("伺服器沒有回傳有效的 LINE User ID。");
+    userLineId=String(verifiedUser.userId).trim();
+    sessionStorage.removeItem(RELOGIN_KEY);
+    loading.innerHTML="正在確認您的會員資料...";
+    const bindings=await callGasApi("checkLineId",{idToken:lineIdToken});
+    onCheckBindResult(bindings);
+  }catch(err){console.error("LIFF/API ERROR",err);if(isExpiredTokenError(err)){await forceLineLogin(err);return;}showError("LINE 身分確認失敗",err.message||err);}
+}
+
+function showError(title,message){document.getElementById("loading").innerHTML="<div class='error-box'><b>❌ "+escapeHtml(title)+"</b><br><br>"+escapeHtml(String(message))+"</div><button class='login-button' onclick='manualLineLogin()'>重新登入 LINE</button>";}
+function escapeHtml(v){return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;");}
+function todayString(){const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return y+"-"+m+"-"+day;}
+function setDefaultDates(){const leave=document.getElementById("leave-date"),makeup=document.getElementById("makeup-date");if(leave&&!leave.value)leave.value=todayString();if(makeup&&!makeup.value)makeup.value=todayString();}
+function onServerFail(err){console.error(err);if(isExpiredTokenError(err)){forceLineLogin(err);return;}const box=document.getElementById("history-list");if(box)box.innerHTML="<div class='error-box'>載入紀錄失敗："+escapeHtml(err&&err.message?err.message:err)+"</div>";}
+
+function relationValue(selectId,otherId){let r=document.getElementById(selectId).value;if(r==="其他"){r=document.getElementById(otherId).value.trim();if(!r){alert("請填寫您與學員的關係！");return null;}}return r;}
+function handleRelationChange(){const other=document.getElementById("bind-other-relation-group"),input=document.getElementById("bind-other-relation");if(document.getElementById("bind-relation").value==="其他"){other.classList.remove("hidden");input.focus();}else{other.classList.add("hidden");input.value="";}}
+async function handleBind(){const name=document.getElementById("bind-student").value.trim(),relation=relationValue("bind-relation","bind-other-relation");if(!name||!relation){if(!name)alert("請輸入學員姓名！");return;}try{await callGasApi("registerUser",{studentName:name,relation:relation});alert("綁定成功！");userBindings.push({studentName:name,relation:relation});document.getElementById("bind-section").classList.add("hidden");showMainSection();}catch(e){alert("綁定失敗："+(e.message||e));}}
+
+function showMainSection(){document.getElementById("main-section").classList.remove("hidden");updateMemberSelect();document.getElementById("user-info-text").innerText="👋 您好，系統已自動確認您的 LINE 身分。";setDefaultDates();onStudentChange();}
+function updateMemberSelect(){const s=document.getElementById("student-select"),old=s.value;s.innerHTML="";userBindings.forEach(function(b){const o=document.createElement("option");o.value=b.studentName;o.text=b.studentName+"（"+b.relation+"）";s.appendChild(o);});if(old&&userBindings.some(b=>b.studentName===old))s.value=old;if(!s.value&&userBindings.length)s.selectedIndex=0;document.getElementById("member-count").innerText="目前 "+userBindings.length+" 位成員";}
+function showAddMember(){document.getElementById("add-member-box").classList.remove("hidden");document.getElementById("add-student").focus();}
+function clearAddMemberForm(){document.getElementById("add-student").value="";document.getElementById("add-relation").value="爸爸";document.getElementById("add-other-relation").value="";document.getElementById("add-other-relation-group").classList.add("hidden");}
+function cancelAddMember(){clearAddMemberForm();document.getElementById("add-member-box").classList.add("hidden");}
+function handleAddRelationChange(){const other=document.getElementById("add-other-relation-group"),input=document.getElementById("add-other-relation");if(document.getElementById("add-relation").value==="其他"){other.classList.remove("hidden");input.focus();}else{other.classList.add("hidden");input.value="";}}
+async function handleAddMember(){const name=document.getElementById("add-student").value.trim(),relation=relationValue("add-relation","add-other-relation");if(!name||!relation){if(!name)alert("請輸入學員姓名！");return;}if(userBindings.some(b=>b.studentName===name)){alert("這位成員已經綁定，不需要重複新增。");return;}try{await callGasApi("registerUser",{studentName:name,relation:relation});userBindings.push({studentName:name,relation:relation});updateMemberSelect();document.getElementById("student-select").value=name;cancelAddMember();onStudentChange();alert("新增成員成功！");}catch(e){alert("新增成員失敗："+(e.message||e));}}
+
+function onStudentChange(){loadHistory();if(currentTab==="makeup")loadValidLeaveDates();}
+function switchTab(tab){currentTab=tab;document.querySelectorAll(".tab").forEach(e=>e.classList.remove("active"));if(tab==="leave"){document.querySelectorAll(".tab")[0].classList.add("active");document.getElementById("leave-form-pane").classList.remove("hidden");document.getElementById("makeup-form-pane").classList.add("hidden");document.getElementById("history-title").innerText="📋 近期請假紀錄";}else{document.querySelectorAll(".tab")[1].classList.add("active");document.getElementById("makeup-form-pane").classList.remove("hidden");document.getElementById("leave-form-pane").classList.add("hidden");document.getElementById("history-title").innerText="📋 近期預約補課紀錄";loadValidLeaveDates();}loadHistory();}
+function handleSlotChange(){const v=document.getElementById("makeup-slot-select").value,g=document.getElementById("makeup-other-group");if(v==="其他")g.classList.remove("hidden");else{g.classList.add("hidden");document.getElementById("makeup-other-input").value="";}}
+
+async function loadHistory(){const s=document.getElementById("student-select"),list=document.getElementById("history-list");if(!s||!s.value)return;list.innerHTML="<div style='color:#64748b;text-align:center;padding:10px'>正在載入紀錄...</div>";try{const action=currentTab==="leave"?"getLeaveHistory":"getMakeupHistory";const history=await callGasApi(action,{studentName:s.value});renderHistory(history);}catch(e){onServerFail(e);}}
+function normalizeHistoryResult(result){if(Array.isArray(result))return result;if(result&&Array.isArray(result.history))return result.history;if(result&&Array.isArray(result.data))return result.data;return [];}
+function renderHistory(result){const history=normalizeHistoryResult(result),list=document.getElementById("history-list");if(!history.length){list.innerHTML="<div style='color:#94a3b8;font-size:13px;text-align:center;padding:10px'>目前沒有相關紀錄</div>";return;}let html="";history.forEach(function(h){let info=currentTab==="leave"?"原因："+escapeHtml(h.reason||"無"):"原請假日期："+escapeHtml(h.originalDate||"未指定")+" | 備註："+escapeHtml(h.remark||"");let del=currentTab==="leave"&&(h.status==="已生效"||h.status==="已核准")?"<button class='delete-leave-button' onclick='deleteLeave("+JSON.stringify(h.date||"")+")'>刪除</button>":"";html+="<div class='history-card'><div class='history-row'><div class='history-content'><b>日期："+escapeHtml(h.date||"")+"</b> | 狀態：<span style='color:#4f46e5'>"+escapeHtml(h.status||"")+"</span><br>"+info+"</div>"+del+"</div></div>";});list.innerHTML=html;}
+
+async function loadValidLeaveDates(){const name=document.getElementById("student-select").value,s=document.getElementById("makeup-original-date");s.innerHTML="<option value=''>載入中...</option>";if(!name){s.innerHTML="<option value=''>-- 請先選擇成員 --</option>";return;}try{const leaves=normalizeHistoryResult(await callGasApi("getValidLeaveDates",{studentName:name}));s.innerHTML="";if(!leaves.length){s.innerHTML="<option value=''>⚠️ 該成員目前沒有可用的請假紀錄</option>";return;}const d=document.createElement("option");d.value="";d.text="-- 請選擇要補哪一天的缺 --";s.appendChild(d);leaves.forEach(function(l){const o=document.createElement("option");o.value=l.date;o.text="📅 原請假日期："+l.date+"（原因："+(l.reason||"無")+"）";s.appendChild(o);});}catch(e){onServerFail(e);}}
+
+async function submitLeave(){const name=document.getElementById("student-select").value,date=document.getElementById("leave-date").value,remark=document.getElementById("leave-remark").value;if(!name){alert("請先選擇成員！");return;}if(!date){alert("請選擇請假日期！");return;}const b=userBindings.find(x=>x.studentName===name);try{await callGasApi("saveLeaveRecord",{relation:b?b.relation:"家長",studentName:name,date:date,remark:remark});alert("請假申請已送出！");document.getElementById("leave-date").value=todayString();document.getElementById("leave-remark").value="";await loadHistory();}catch(e){if(isExpiredTokenError(e))return forceLineLogin(e);alert("送出失敗："+(e.message||e));}}
+
+async function submitMakeup(){const name=document.getElementById("student-select").value,originalDate=document.getElementById("makeup-original-date").value,date=document.getElementById("makeup-date").value,slot=document.getElementById("makeup-slot-select").value,other=document.getElementById("makeup-other-input").value.trim();if(!name){alert("請先選擇成員！");return;}if(!originalDate){alert("請選擇您要抵扣的原請假日期！");return;}if(!date){alert("請選擇預約補課日期！");return;}if(!slot){alert("請選擇補課時段！");return;}if(slot==="其他"&&!other){alert("請填寫其他補課時段 / 備註！");return;}const b=userBindings.find(x=>x.studentName===name),remark=slot==="其他"?"其他："+other:slot;try{await callGasApi("saveMakeupRecord",{relation:b?b.relation:"家長",studentName:name,originalDate:originalDate,date:date,remark:remark});alert("補課預約已送出！");document.getElementById("makeup-date").value=todayString();document.getElementById("makeup-slot-select").value="";document.getElementById("makeup-other-input").value="";document.getElementById("makeup-other-group").classList.add("hidden");await loadValidLeaveDates();await loadHistory();}catch(e){if(isExpiredTokenError(e))return forceLineLogin(e);alert("送出失敗："+(e.message||e));}}
+
+async function deleteLeave(date){const name=document.getElementById("student-select").value;if(!name||!date)return;if(!confirm("確定要刪除 "+date+" 的請假紀錄嗎？\n\n刪除後將無法復原。"))return;try{await callGasApi("deleteLeaveRecord",{studentName:name,date:date});alert("請假紀錄已刪除。");await loadHistory();if(currentTab==="makeup")await loadValidLeaveDates();}catch(e){if(isExpiredTokenError(e))return forceLineLogin(e);alert("刪除失敗："+(e.message||e));}}
+
+function onCheckBindResult(result){userBindings=Array.isArray(result)?result:[];document.getElementById("loading").classList.add("hidden");if(!userBindings.length)document.getElementById("bind-section").classList.remove("hidden");else showMainSection();}
+</script>
 </body>
 </html>
-```
