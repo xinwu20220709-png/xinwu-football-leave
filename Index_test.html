@@ -1,1274 +1,681 @@
+```html
 <!DOCTYPE html>
 <html>
-
 <head>
   <base target="_top">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>新屋足球俱樂部 - 請假與補課系統</title>
-
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
-
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        sans-serif;
-
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: #f8fafc;
-
       margin: 0;
       padding: 16px;
-
       color: #1e293b;
     }
 
-
     .container {
       max-width: 500px;
-
       margin: 0 auto;
-
-      background: white;
-
+      background: #fff;
       padding: 24px;
-
       border-radius: 16px;
-
-      box-shadow:
-        0 4px 20px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
     }
-
 
     h2 {
       color: #4f46e5;
-
       text-align: center;
-
-      margin-top: 0;
-
+      margin: 0 0 20px;
       font-size: 22px;
     }
 
-
-    /* ==========================================================
-       分頁
-    ========================================================== */
-
     .tabs {
       display: flex;
-
       margin-bottom: 20px;
-
-      border-bottom:
-        2px solid #e2e8f0;
+      border-bottom: 2px solid #e2e8f0;
     }
-
 
     .tab {
       flex: 1;
-
       text-align: center;
-
       padding: 10px;
-
       cursor: pointer;
-
       font-weight: bold;
-
       color: #64748b;
-
       font-size: 15px;
     }
-
 
     .tab.active {
       color: #4f46e5;
-
-      border-bottom:
-        3px solid #4f46e5;
-
+      border-bottom: 3px solid #4f46e5;
       margin-bottom: -2px;
     }
 
-
-    /* ==========================================================
-       表單
-    ========================================================== */
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
+    .form-group { margin-bottom: 16px; }
 
     label {
       display: block;
-
       font-weight: 600;
-
       margin-bottom: 6px;
-
       font-size: 14px;
-
       color: #475569;
     }
 
-
-    input,
-    select,
-    textarea {
+    input, select, textarea {
       width: 100%;
-
       padding: 10px 12px;
-
-      border:
-        1px solid #cbd5e1;
-
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
-
       font-size: 15px;
-
-      background: white;
+      background: #fff;
     }
 
-
-    textarea {
-      resize: vertical;
-    }
-
+    textarea { resize: vertical; }
 
     button {
       width: 100%;
-
       background: #4f46e5;
-
-      color: white;
-
+      color: #fff;
       border: none;
-
       padding: 12px;
-
       border-radius: 8px;
-
       font-size: 16px;
-
       font-weight: bold;
-
       cursor: pointer;
-
       margin-top: 8px;
     }
 
-
-    button:hover {
-      background: #4338ca;
-    }
-
+    button:hover { background: #4338ca; }
 
     button:disabled {
-      opacity: 0.6;
-
+      opacity: .6;
       cursor: not-allowed;
     }
 
-
-    .hidden {
-      display: none !important;
-    }
-
-
-    /* ==========================================================
-       提示
-    ========================================================== */
+    .hidden { display: none !important; }
 
     .notice {
       background: #eef2ff;
-
-      border-left:
-        4px solid #4f46e5;
-
+      border-left: 4px solid #4f46e5;
       padding: 12px;
-
       font-size: 13px;
-
       margin-bottom: 16px;
-
       border-radius: 4px;
-
       color: #3730a3;
-
       line-height: 1.5;
     }
-
-
-    /* ==========================================================
-       成員區
-    ========================================================== */
 
     .member-header {
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
       gap: 10px;
-
       margin-bottom: 6px;
     }
 
-
     .member-header-left {
       display: flex;
-
       align-items: center;
-
       gap: 8px;
     }
-
 
     .member-header-left label {
       margin: 0;
-
       font-size: 15px;
-
       color: #334155;
     }
 
-
     .member-count {
       color: #64748b;
-
       font-size: 13px;
-
       font-weight: normal;
-
       white-space: nowrap;
     }
-
-
-    /* 小型新增按鈕 */
 
     .add-member-button {
       width: auto;
-
       margin: 0;
-
       padding: 6px 12px;
-
       border-radius: 7px;
-
       background: #10b981;
-
       font-size: 13px;
-
       font-weight: 600;
-
       white-space: nowrap;
     }
 
-
-    .add-member-button:hover {
-      background: #059669;
-    }
-
-
-    /* ==========================================================
-       新增成員區塊
-    ========================================================== */
+    .add-member-button:hover { background: #059669; }
 
     .add-member-box {
       background: #f0fdf4;
-
-      border:
-        1px solid #bbf7d0;
-
+      border: 1px solid #bbf7d0;
       border-radius: 10px;
-
       padding: 14px;
-
       margin-bottom: 18px;
     }
 
-
     .add-member-title {
       font-size: 15px;
-
       font-weight: bold;
-
       color: #166534;
-
       margin-bottom: 12px;
     }
 
-
     .add-member-actions {
       display: flex;
-
       gap: 8px;
-
       margin-top: 4px;
     }
 
-
     .add-member-actions button {
       flex: 1;
-
       margin-top: 0;
     }
 
-
     .cancel-button {
       background: #e2e8f0;
-
       color: #475569;
     }
 
+    .cancel-button:hover { background: #cbd5e1; }
 
-    .cancel-button:hover {
-      background: #cbd5e1;
-    }
-
-
-    .confirm-add-button {
-      background: #10b981;
-    }
-
-
-    .confirm-add-button:hover {
-      background: #059669;
-    }
-
-
-    /* ==========================================================
-       歷史紀錄
-    ========================================================== */
+    .confirm-add-button { background: #10b981; }
+    .confirm-add-button:hover { background: #059669; }
 
     .history-card {
       background: #f8fafc;
-
-      border:
-        1px solid #e2e8f0;
-
+      border: 1px solid #e2e8f0;
       padding: 12px;
-
       border-radius: 8px;
-
       margin-bottom: 8px;
-
       font-size: 13px;
     }
 
+    .history-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
-    /* ==========================================================
-       錯誤
-    ========================================================== */
+    .history-content {
+      flex: 1;
+      min-width: 0;
+      line-height: 1.6;
+    }
+
+    .delete-leave-button {
+      width: auto;
+      flex: 0 0 auto;
+      margin: 0;
+      padding: 5px 9px;
+      border-radius: 6px;
+      background: #ef4444;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .delete-leave-button:hover { background: #dc2626; }
 
     .error-box {
       background: #fef2f2;
-
-      border-left:
-        4px solid #ef4444;
-
+      border-left: 4px solid #ef4444;
       padding: 12px;
-
       font-size: 13px;
-
       margin-top: 12px;
-
       border-radius: 4px;
-
       color: #991b1b;
-
       line-height: 1.5;
-
       word-break: break-word;
     }
 
-
-    .line-id-box {
-      margin-top: 12px;
-
-      padding: 10px;
-
-      background: #f1f5f9;
-
-      border-radius: 8px;
-
-      font-size: 12px;
-
-      word-break: break-all;
-
-      color: #475569;
+    hr {
+      margin: 20px 0;
+      border: 0;
+      border-top: 1px solid #e2e8f0;
     }
-
   </style>
-
 </head>
 
-
 <body>
-
   <div class="container">
+    <h2>⚽ 新屋足球俱樂部</h2>
 
-
-    <!-- ========================================================
-         標題
-    ========================================================= -->
-
-    <h2>
-      ⚽ 新屋足球俱樂部
-    </h2>
-
-
-    <!-- ========================================================
-         載入中
-    ========================================================= -->
-
-    <div
-      id="loading"
-      style="
-        text-align:center;
-        padding:30px;
-        color:#64748b;
-      "
-    >
+    <div id="loading" style="text-align:center;padding:30px;color:#64748b;">
       載入中，正在確認您的 LINE 身分...
     </div>
 
-
-    <!-- ========================================================
-         第一次綁定
-    ========================================================= -->
-
-    <div
-      id="bind-section"
-      class="hidden"
-    >
-
+    <!-- 第一次綁定 -->
+    <div id="bind-section" class="hidden">
       <div class="notice">
-
-        您好！這是您第一次使用本系統。
-
-        為了方便您之後直接點開就能使用，
-
+        您好！這是您第一次使用本系統。<br>
+        為了方便您之後直接點開就能使用，<br>
         請先簡單綁定學員資料。
-
       </div>
 
-
       <div class="form-group">
-
-        <label>
-          學員姓名
-        </label>
-
-        <input
-          type="text"
-          id="bind-student"
-          placeholder="例如：王小明"
-        >
-
+        <label>學員姓名</label>
+        <input type="text" id="bind-student" placeholder="例如：王小明">
       </div>
 
-
       <div class="form-group">
-
-        <label>
-          您與學員的關係
-        </label>
-
-        <select
-          id="bind-relation"
-          onchange="handleRelationChange()"
-        >
-
-          <option value="爸爸">
-            爸爸
-          </option>
-
-          <option value="媽媽">
-            媽媽
-          </option>
-
-          <option value="阿公">
-            阿公
-          </option>
-
-          <option value="阿嬤">
-            阿嬤
-          </option>
-
-          <option value="其他">
-            其他（自行填寫）
-          </option>
-
+        <label>您與學員的關係</label>
+        <select id="bind-relation" onchange="handleRelationChange()">
+          <option value="爸爸">爸爸</option>
+          <option value="媽媽">媽媽</option>
+          <option value="阿公">阿公</option>
+          <option value="阿嬤">阿嬤</option>
+          <option value="其他">其他（自行填寫）</option>
         </select>
-
       </div>
 
-
-      <div
-        class="form-group hidden"
-        id="bind-other-relation-group"
-      >
-
-        <label>
-          請填寫您與學員的關係
-        </label>
-
-        <input
-          type="text"
-          id="bind-other-relation"
-          placeholder="例如：阿姨、叔叔、朋友、監護人"
-          maxlength="20"
-        >
-
+      <div class="form-group hidden" id="bind-other-relation-group">
+        <label>請填寫您與學員的關係</label>
+        <input type="text" id="bind-other-relation" placeholder="例如：阿姨、叔叔、朋友、監護人" maxlength="20">
       </div>
 
-
-      <button onclick="handleBind()">
-        完成綁定並進入
-      </button>
-
+      <button onclick="handleBind()">完成綁定並進入</button>
     </div>
 
-
-    <!-- ========================================================
-         主系統
-    ========================================================= -->
-
-    <div
-      id="main-section"
-      class="hidden"
-    >
-
-
-      <div
-        class="notice"
-        id="user-info-text"
-      ></div>
-
-
-      <!-- ======================================================
-           分頁
-      ======================================================= -->
+    <!-- 主系統 -->
+    <div id="main-section" class="hidden">
+      <div class="notice" id="user-info-text"></div>
 
       <div class="tabs">
-
-        <div
-          class="tab active"
-          onclick="switchTab('leave')"
-        >
-          請假申請
-        </div>
-
-        <div
-          class="tab"
-          onclick="switchTab('makeup')"
-        >
-          預約補課
-        </div>
-
+        <div class="tab active" onclick="switchTab('leave')">請假申請</div>
+        <div class="tab" onclick="switchTab('makeup')">預約補課</div>
       </div>
 
-
-      <!-- ======================================================
-           成員選擇
-      ======================================================= -->
-
+      <!-- 成員選擇 -->
       <div class="form-group">
-
-
-        <!-- 標題 + 人數 + 新增 -->
         <div class="member-header">
-
           <div class="member-header-left">
-
-            <label>
-              選擇成員
-            </label>
-
-            <span
-              class="member-count"
-              id="member-count"
-            >
-              目前 0 位成員
-            </span>
-
+            <label>選擇成員</label>
+            <span class="member-count" id="member-count">目前 0 位成員</span>
           </div>
 
-
-          <button
-            type="button"
-            class="add-member-button"
-            onclick="showAddMember()"
-          >
-            ＋新增
-          </button>
-
+          <button type="button" class="add-member-button" onclick="showAddMember()">＋新增</button>
         </div>
 
-
-        <!-- 成員下拉選單 -->
-
-        <select
-          id="student-select"
-          onchange="onStudentChange()"
-        ></select>
-
-
+        <select id="student-select" onchange="onStudentChange()"></select>
       </div>
 
-
-      <!-- ======================================================
-           新增成員
-      ======================================================= -->
-
-      <div
-        id="add-member-box"
-        class="add-member-box hidden"
-      >
-
-        <div class="add-member-title">
-          ＋ 新增成員
-        </div>
-
+      <!-- 新增成員 -->
+      <div id="add-member-box" class="add-member-box hidden">
+        <div class="add-member-title">＋ 新增成員</div>
 
         <div class="form-group">
-
-          <label>
-            學員姓名
-          </label>
-
-          <input
-            type="text"
-            id="add-student"
-            placeholder="例如：王小明"
-          >
-
+          <label>學員姓名</label>
+          <input type="text" id="add-student" placeholder="例如：王小明">
         </div>
 
-
         <div class="form-group">
-
-          <label>
-            您與學員的關係
-          </label>
-
-          <select
-            id="add-relation"
-            onchange="handleAddRelationChange()"
-          >
-
-            <option value="爸爸">
-              爸爸
-            </option>
-
-            <option value="媽媽">
-              媽媽
-            </option>
-
-            <option value="阿公">
-              阿公
-            </option>
-
-            <option value="阿嬤">
-              阿嬤
-            </option>
-
-            <option value="其他">
-              其他（自行填寫）
-            </option>
-
+          <label>您與學員的關係</label>
+          <select id="add-relation" onchange="handleAddRelationChange()">
+            <option value="爸爸">爸爸</option>
+            <option value="媽媽">媽媽</option>
+            <option value="阿公">阿公</option>
+            <option value="阿嬤">阿嬤</option>
+            <option value="其他">其他（自行填寫）</option>
           </select>
-
         </div>
 
-
-        <div
-          class="form-group hidden"
-          id="add-other-relation-group"
-        >
-
-          <label>
-            請填寫您與學員的關係
-          </label>
-
-          <input
-            type="text"
-            id="add-other-relation"
-            placeholder="例如：阿姨、叔叔、朋友、監護人"
-            maxlength="20"
-          >
-
+        <div class="form-group hidden" id="add-other-relation-group">
+          <label>請填寫您與學員的關係</label>
+          <input type="text" id="add-other-relation" placeholder="例如：阿姨、叔叔、朋友、監護人" maxlength="20">
         </div>
-
 
         <div class="add-member-actions">
-
-          <button
-            type="button"
-            class="cancel-button"
-            onclick="cancelAddMember()"
-          >
-            取消
-          </button>
-
-          <button
-            type="button"
-            class="confirm-add-button"
-            onclick="handleAddMember()"
-          >
-            確認新增
-          </button>
-
+          <button type="button" class="cancel-button" onclick="cancelAddMember()">取消</button>
+          <button type="button" class="confirm-add-button" onclick="handleAddMember()">確認新增</button>
         </div>
-
       </div>
 
-
-      <!-- ======================================================
-           請假表單
-      ======================================================= -->
-
+      <!-- 請假 -->
       <div id="leave-form-pane">
-
-
         <div class="form-group">
-
-          <label>
-            請假日期
-          </label>
-
-          <input
-            type="date"
-            id="leave-date"
-          >
-
+          <label>請假日期</label>
+          <input type="date" id="leave-date">
         </div>
 
-
         <div class="form-group">
-
-          <label>
-            請假原因 / 備註
-          </label>
-
-          <textarea
-            id="leave-remark"
-            rows="2"
-            placeholder="若有特殊狀況請在此說明"
-          ></textarea>
-
+          <label>請假原因 / 備註</label>
+          <textarea id="leave-remark" rows="2" placeholder="若有特殊狀況請在此說明"></textarea>
         </div>
 
-
-        <button onclick="submitLeave()">
-          送出請假申請
-        </button>
-
+        <button onclick="submitLeave()">送出請假申請</button>
       </div>
 
-
-      <!-- ======================================================
-           補課表單
-      ======================================================= -->
-
-      <div
-        id="makeup-form-pane"
-        class="hidden"
-      >
-
-
+      <!-- 補課 -->
+      <div id="makeup-form-pane" class="hidden">
         <div class="form-group">
-
-          <label>
-            📌 選擇要抵扣的原請假日期（對應缺課）
-          </label>
-
-          <select
-            id="makeup-original-date"
-          >
-
-            <option value="">
-              -- 請先選擇請假紀錄 --
-            </option>
-
+          <label>📌 選擇要抵扣的原請假日期（對應缺課）</label>
+          <select id="makeup-original-date">
+            <option value="">-- 請先選擇請假紀錄 --</option>
           </select>
-
         </div>
 
-
         <div class="form-group">
-
-          <label>
-            預約補課日期
-          </label>
-
-          <input
-            type="date"
-            id="makeup-date"
-          >
-
+          <label>預約補課日期</label>
+          <input type="date" id="makeup-date">
         </div>
 
-
         <div class="form-group">
-
-          <label>
-            選擇補課時段
-          </label>
-
-          <select
-            id="makeup-slot-select"
-            onchange="handleSlotChange()"
-          >
-
-            <option value="">
-              -- 請選擇補課時段 --
-            </option>
-
-            <option value="團體班2">
-              團體班2
-            </option>
-
-            <option value="團體班3">
-              團體班3
-            </option>
-
-            <option value="團體班4">
-              團體班4
-            </option>
-
-            <option value="團體班6">
-              團體班6
-            </option>
-
-            <option value="其他">
-              其他（自行填寫）
-            </option>
-
+          <label>選擇補課時段</label>
+          <select id="makeup-slot-select" onchange="handleSlotChange()">
+            <option value="">-- 請選擇補課時段 --</option>
+            <option value="團體班2">團體班2</option>
+            <option value="團體班3">團體班3</option>
+            <option value="團體班4">團體班4</option>
+            <option value="團體班6">團體班6</option>
+            <option value="其他">其他（自行填寫）</option>
           </select>
-
         </div>
 
-
-        <div
-          class="form-group hidden"
-          id="makeup-other-group"
-        >
-
-          <label>
-            請輸入其他補課時段 / 備註
-          </label>
-
-          <input
-            type="text"
-            id="makeup-other-input"
-            placeholder="例如：一對一特訓班"
-          >
-
+        <div class="form-group hidden" id="makeup-other-group">
+          <label>請輸入其他補課時段 / 備註</label>
+          <input type="text" id="makeup-other-input" placeholder="例如：一對一特訓班">
         </div>
 
-
-        <button
-          onclick="submitMakeup()"
-          style="background:#0ea5e9;"
-        >
-          送出補課預約
-        </button>
-
+        <button onclick="submitMakeup()" style="background:#0ea5e9;">送出補課預約</button>
       </div>
 
-
-      <!-- ======================================================
-           歷史紀錄
-      ======================================================= -->
-
+      <!-- 歷史紀錄 -->
       <div style="margin-top:24px;">
+        <hr>
 
-        <hr
-          style="
-            margin:20px 0;
-            border:0;
-            border-top:1px solid #e2e8f0;
-          "
-        >
-
-
-        <h3
-          id="history-title"
-          style="
-            font-size:15px;
-            color:#334155;
-            margin-bottom:10px;
-          "
-        >
+        <h3 id="history-title" style="font-size:15px;color:#334155;margin-bottom:10px;">
           📋 近期請假紀錄
         </h3>
 
-
-        <div id="history-list">
-          尚無紀錄
-        </div>
-
+        <div id="history-list">尚無紀錄</div>
       </div>
-
     </div>
-
   </div>
 
-
   <script>
-
-
     // ==========================================================
-    // 全域變數
+    // 全域設定
     // ==========================================================
+
+    const LIFF_ID = "2011307172-d3esgseq";
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwJYszBcuHQ-BkR5k9NyUJJ3W-1F78dK4XP_epIaFrwtnv9sosk13ZR_7-iFvFmUmfU/exec";
+    const GAS_API_CHANNEL = "NEW屋_SOCCER_GAS_API";
 
     let lineIdToken = "";
-
     let userLineId = "";
-
     let userBindings = [];
-
     let currentTab = "leave";
-
+    let liffInitialized = false;
+    let tokenRefreshing = null;
+    const pendingApiRequests = new Map();
 
     // ==========================================================
-    // GAS API
+    // 取得目前有效的 LINE ID Token
     // ==========================================================
 
-    const GAS_API_URL =
-      "https://script.google.com/macros/s/AKfycbwJYszBcuHQ-BkR5k9NyUJJ3W-1F78dK4XP_epIaFrwtnv9sosk13ZR_7-iFvFmUmfU/exec";
+    async function getCurrentLineIdToken() {
+      if (typeof liff === "undefined") {
+        throw new Error("LIFF SDK 尚未載入。");
+      }
 
+      if (!liffInitialized) {
+        await liff.init({
+          liffId: LIFF_ID,
+          withLoginOnExternalBrowser: true
+        });
+        liffInitialized = true;
+      }
 
-    const GAS_API_CHANNEL =
-      "NEW屋_SOCCER_GAS_API";
+      if (!liff.isLoggedIn()) {
+        if (!liff.isInClient()) {
+          liff.login();
+          throw new Error("LINE 登入狀態已失效，正在重新登入。");
+        }
 
+        throw new Error("LINE 登入狀態已失效，請重新開啟系統。");
+      }
 
-    const pendingApiRequests =
-      new Map();
+      const token = liff.getIDToken();
 
+      if (!token) {
+        throw new Error("無法取得 LINE ID Token，請重新開啟系統。");
+      }
+
+      lineIdToken = String(token);
+      return lineIdToken;
+    }
+
+    // ==========================================================
+    // 重新初始化 LIFF 並取得新 Token
+    //
+    // ID Token 有效期為 1 小時。
+    // 如果 GAS 回覆 IdToken expired，就重新初始化並重試一次。
+    // ==========================================================
+
+    async function refreshLineIdToken() {
+      if (tokenRefreshing) {
+        return tokenRefreshing;
+      }
+
+      tokenRefreshing = (async function() {
+        if (typeof liff === "undefined") {
+          throw new Error("LIFF SDK 尚未載入。");
+        }
+
+        if (!liff.isLoggedIn()) {
+          if (!liff.isInClient()) {
+            liff.login();
+            throw new Error("LINE 登入狀態已失效，正在重新登入。");
+          }
+
+          throw new Error("LINE 登入狀態已失效，請重新開啟系統。");
+        }
+
+        // 重新執行 LIFF 初始化，讓 SDK 重新取得目前的 Token 狀態。
+        await liff.init({
+          liffId: LIFF_ID,
+          withLoginOnExternalBrowser: true
+        });
+
+        liffInitialized = true;
+
+        const newToken = liff.getIDToken();
+
+        if (!newToken) {
+          throw new Error("重新取得 LINE ID Token 失敗，請重新開啟系統。");
+        }
+
+        lineIdToken = String(newToken);
+
+        return lineIdToken;
+      })();
+
+      try {
+        return await tokenRefreshing;
+      } finally {
+        tokenRefreshing = null;
+      }
+    }
+
+    // ==========================================================
+    // 判斷是否為 Token 過期錯誤
+    // ==========================================================
+
+    function isExpiredTokenError(err) {
+      const message = String(
+        err && err.message ? err.message : err || ""
+      ).toLowerCase();
+
+      return (
+        message.includes("idtoken expired") ||
+        message.includes("id token expired") ||
+        message.includes("token expired") ||
+        message.includes("invalid id token") ||
+        message.includes("invalid_id_token")
+      );
+    }
 
     // ==========================================================
     // 接收 GAS API 回傳
     // ==========================================================
 
-    window.addEventListener(
-      "message",
-      function(event) {
+    window.addEventListener("message", function(event) {
+      const message = event && event.data;
 
-        const message =
-          event && event.data;
+      if (!message || message.channel !== GAS_API_CHANNEL) {
+        return;
+      }
 
+      const pending = pendingApiRequests.get(message.requestId);
 
-        if (
-          !message ||
-          message.channel !== GAS_API_CHANNEL
-        ) {
-          return;
-        }
+      if (!pending) {
+        return;
+      }
 
+      pendingApiRequests.delete(message.requestId);
 
-        const pending =
-          pendingApiRequests.get(
-            message.requestId
-          );
+      if (pending.iframe && pending.iframe.parentNode) {
+        pending.iframe.parentNode.removeChild(pending.iframe);
+      }
 
+      if (message.response && message.response.ok) {
+        pending.resolve(message.response.data);
+      } else {
+        pending.reject(
+          new Error(
+            message.response && message.response.error
+              ? message.response.error
+              : "GAS API 發生未知錯誤。"
+          )
+        );
+      }
+    });
 
-        if (!pending) {
-          return;
-        }
+    // ==========================================================
+    // 實際送出 GAS API
+    // ==========================================================
 
+    function sendGasApiRequest(action, payload) {
+      return new Promise(function(resolve, reject) {
+        const requestId =
+          "req_" +
+          Date.now().toString(36) +
+          "_" +
+          Math.random().toString(36).slice(2);
 
-        pendingApiRequests.delete(
-          message.requestId
+        const iframe = document.createElement("iframe");
+        iframe.name = requestId;
+        iframe.style.display = "none";
+        iframe.setAttribute("aria-hidden", "true");
+        document.body.appendChild(iframe);
+
+        pendingApiRequests.set(requestId, {
+          resolve,
+          reject,
+          iframe
+        });
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = GAS_API_URL;
+        form.target = requestId;
+        form.style.display = "none";
+
+        const requestInput = document.createElement("input");
+        requestInput.type = "hidden";
+        requestInput.name = "requestId";
+        requestInput.value = requestId;
+
+        const payloadInput = document.createElement("input");
+        payloadInput.type = "hidden";
+        payloadInput.name = "payload";
+        payloadInput.value = JSON.stringify(
+          Object.assign({}, payload || {}, { action })
         );
 
+        form.appendChild(requestInput);
+        form.appendChild(payloadInput);
+        document.body.appendChild(form);
 
-        if (
-          pending.iframe &&
-          pending.iframe.parentNode
-        ) {
+        form.submit();
+        form.remove();
 
-          pending.iframe.parentNode.removeChild(
-            pending.iframe
+        setTimeout(function() {
+          const pendingRequest = pendingApiRequests.get(requestId);
+
+          if (!pendingRequest) {
+            return;
+          }
+
+          pendingApiRequests.delete(requestId);
+
+          if (iframe.parentNode) {
+            iframe.parentNode.removeChild(iframe);
+          }
+
+          reject(
+            new Error("伺服器回應逾時，請確認 GAS Web App 已重新部署。")
           );
-
-        }
-
-
-        if (
-          message.response &&
-          message.response.ok
-        ) {
-
-          pending.resolve(
-            message.response.data
-          );
-
-        } else {
-
-          pending.reject(
-            new Error(
-              message.response &&
-              message.response.error
-                ? message.response.error
-                : "GAS API 發生未知錯誤。"
-            )
-          );
-
-        }
-
-      }
-    );
-
-
-    // ==========================================================
-    // 呼叫 GAS API
-    // ==========================================================
-
-    function callGasApi(
-      action,
-      payload
-    ) {
-
-      return new Promise(
-        function(resolve, reject) {
-
-          const requestId =
-            "req_" +
-            Date.now().toString(36) +
-            "_" +
-            Math.random()
-              .toString(36)
-              .slice(2);
-
-
-          const iframe =
-            document.createElement(
-              "iframe"
-            );
-
-
-          iframe.name =
-            requestId;
-
-
-          iframe.style.display =
-            "none";
-
-
-          iframe.setAttribute(
-            "aria-hidden",
-            "true"
-          );
-
-
-          document.body.appendChild(
-            iframe
-          );
-
-
-          pendingApiRequests.set(
-            requestId,
-            {
-              resolve,
-              reject,
-              iframe
-            }
-          );
-
-
-          const form =
-            document.createElement(
-              "form"
-            );
-
-
-          form.method =
-            "POST";
-
-
-          form.action =
-            GAS_API_URL;
-
-
-          form.target =
-            requestId;
-
-
-          form.style.display =
-            "none";
-
-
-          const requestInput =
-            document.createElement(
-              "input"
-            );
-
-
-          requestInput.type =
-            "hidden";
-
-
-          requestInput.name =
-            "requestId";
-
-
-          requestInput.value =
-            requestId;
-
-
-          const payloadInput =
-            document.createElement(
-              "input"
-            );
-
-
-          payloadInput.type =
-            "hidden";
-
-
-          payloadInput.name =
-            "payload";
-
-
-          payloadInput.value =
-            JSON.stringify(
-              Object.assign(
-                {},
-                payload || {},
-                {
-                  action
-                }
-              )
-            );
-
-
-          form.appendChild(
-            requestInput
-          );
-
-
-          form.appendChild(
-            payloadInput
-          );
-
-
-          document.body.appendChild(
-            form
-          );
-
-
-          form.submit();
-
-
-          form.remove();
-
-
-          setTimeout(
-            function() {
-
-              const pending =
-                pendingApiRequests.get(
-                  requestId
-                );
-
-
-              if (!pending) {
-                return;
-              }
-
-
-              pendingApiRequests.delete(
-                requestId
-              );
-
-
-              if (
-                iframe.parentNode
-              ) {
-
-                iframe.parentNode.removeChild(
-                  iframe
-                );
-
-              }
-
-
-              reject(
-                new Error(
-                  "伺服器回應逾時，請確認 GAS Web App 已重新部署。"
-                )
-              );
-
-            },
-            30000
-          );
-
-        }
-      );
-
+        }, 30000);
+      });
     }
 
+    // ==========================================================
+    // GAS API
+    //
+    // 重點：
+    // 每次 API 呼叫前都取得目前 ID Token。
+    // 如果第一次收到 expired，再重新初始化 LIFF 並重試一次。
+    // ==========================================================
+
+    async function callGasApi(action, payload) {
+      const requestPayload = Object.assign({}, payload || {});
+
+      requestPayload.idToken = await getCurrentLineIdToken();
+
+      try {
+        return await sendGasApiRequest(action, requestPayload);
+      } catch (err) {
+        if (!isExpiredTokenError(err)) {
+          throw err;
+        }
+
+        console.warn("LINE ID Token 已過期，正在重新取得 Token...", err);
+
+        requestPayload.idToken = await refreshLineIdToken();
+
+        return await sendGasApiRequest(action, requestPayload);
+      }
+    }
 
     // ==========================================================
     // 頁面載入
     // ==========================================================
 
-    window.addEventListener(
-      "load",
-      initSystem
-    );
-
+    window.addEventListener("load", initSystem);
 
     async function initSystem() {
-
-      const loading =
-        document.getElementById(
-          "loading"
-        );
-
+      const loading = document.getElementById("loading");
 
       try {
-
-        if (
-          typeof liff === "undefined"
-        ) {
-
-          throw new Error(
-            "LIFF SDK 尚未載入。"
-          );
-
+        if (typeof liff === "undefined") {
+          throw new Error("LIFF SDK 尚未載入。");
         }
 
-
-        loading.innerHTML =
-          "正在初始化 LINE 身分...";
-
+        loading.innerHTML = "正在初始化 LINE 身分...";
 
         await liff.init({
-
-          liffId:
-            "2011307172-d3esgseq",
-
-          withLoginOnExternalBrowser:
-            true
-
+          liffId: LIFF_ID,
+          withLoginOnExternalBrowser: true
         });
 
+        liffInitialized = true;
 
         console.log(
           "LIFF 初始化成功",
@@ -1277,1820 +684,734 @@
           liff.isLoggedIn()
         );
 
-
         if (!liff.isLoggedIn()) {
-
-          throw new Error(
-            "LINE 登入尚未完成。請重新從 LINE 開啟系統。"
-          );
-
+          throw new Error("LINE 登入尚未完成。請重新從 LINE 開啟系統。");
         }
 
+        loading.innerHTML = "正在取得 LINE 身分驗證資訊...";
 
-        loading.innerHTML =
-          "正在取得 LINE 身分驗證資訊...";
+        lineIdToken = await getCurrentLineIdToken();
 
+        loading.innerHTML = "正在驗證 LINE 身分...";
 
-        const idToken =
-          liff.getIDToken();
+        const verifiedUser = await sendGasApiRequest(
+          "verifyLineIdToken",
+          { idToken: lineIdToken }
+        );
 
-
-        if (!idToken) {
-
-          throw new Error(
-            "無法取得 LINE ID Token。請確認 LIFF Scope 已開啟 openid。"
-          );
-
+        if (!verifiedUser || !verifiedUser.userId) {
+          throw new Error("伺服器沒有回傳有效的 LINE User ID。");
         }
 
-
-        lineIdToken =
-          String(idToken);
-
-
-        loading.innerHTML =
-          "正在驗證 LINE 身分...";
-
-
-        const verifiedUser =
-          await callGasApi(
-            "verifyLineIdToken",
-            {
-              idToken:
-                lineIdToken
-            }
-          );
-
-
-        if (
-          !verifiedUser ||
-          !verifiedUser.userId
-        ) {
-
-          throw new Error(
-            "伺服器沒有回傳有效的 LINE User ID。"
-          );
-
-        }
-
-
-        userLineId =
-          String(
-            verifiedUser.userId
-          ).trim();
-
+        userLineId = String(verifiedUser.userId).trim();
 
         console.log(
           "LINE User ID 已由 LINE Platform 驗證取得",
           userLineId
         );
 
+        loading.innerHTML = "正在確認您的會員資料...";
 
-        loading.innerHTML =
-          "正在確認您的會員資料...";
-
-
-        const bindings =
-          await callGasApi(
-            "checkLineId",
-            {
-              idToken:
-                lineIdToken
-            }
-          );
-
-
-        onCheckBindResult(
-          bindings
+        const bindings = await callGasApi(
+          "checkLineId",
+          { idToken: lineIdToken }
         );
 
-
+        onCheckBindResult(bindings);
       } catch (err) {
-
-        console.error(
-          "LIFF / API ERROR:",
-          err
-        );
-
+        console.error("LIFF / API ERROR:", err);
 
         showError(
           "LINE 身分確認失敗",
-          err && err.message
-            ? err.message
-            : err
+          err && err.message ? err.message : err
         );
-
       }
-
     }
-
 
     // ==========================================================
     // 顯示錯誤
     // ==========================================================
 
-    function showError(
-      title,
-      message
-    ) {
-
-      const loading =
-        document.getElementById(
-          "loading"
-        );
-
+    function showError(title, message) {
+      const loading = document.getElementById("loading");
 
       loading.innerHTML =
         "<div class='error-box'>" +
-
-        "<b>❌ " +
-        escapeHtml(title) +
-        "</b><br><br>" +
-
-        escapeHtml(
-          String(message)
-        ) +
-
+        "<b>❌ " + escapeHtml(title) + "</b><br><br>" +
+        escapeHtml(String(message)) +
         "</div>";
-
     }
-
 
     // ==========================================================
     // HTML Escape
     // ==========================================================
 
-    function escapeHtml(
-      value
-    ) {
-
+    function escapeHtml(value) {
       return String(value)
-
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-
-        .replace(
-          /</g,
-          "&lt;"
-        )
-
-        .replace(
-          />/g,
-          "&gt;"
-        )
-
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-
-        .replace(
-          /'/g,
-          "&#039;"
-        );
-
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
-
 
     // ==========================================================
     // GAS 伺服器錯誤
     // ==========================================================
 
-    function onServerFail(
-      err
-    ) {
-
-      console.error(
-        "Server Error:",
-        err
-      );
-
+    function onServerFail(err) {
+      console.error("Server Error:", err);
 
       showError(
         "伺服器連線發生錯誤",
-        err && err.message
-          ? err.message
-          : err
+        err && err.message ? err.message : err
       );
-
     }
-
 
     // ==========================================================
     // 第一次綁定：關係選擇
     // ==========================================================
 
     function handleRelationChange() {
+      const relation = document.getElementById("bind-relation").value;
+      const otherGroup = document.getElementById("bind-other-relation-group");
+      const otherInput = document.getElementById("bind-other-relation");
 
-      const relation =
-        document.getElementById(
-          "bind-relation"
-        ).value;
-
-
-      const otherGroup =
-        document.getElementById(
-          "bind-other-relation-group"
-        );
-
-
-      const otherInput =
-        document.getElementById(
-          "bind-other-relation"
-        );
-
-
-      if (
-        relation === "其他"
-      ) {
-
-        otherGroup.classList.remove(
-          "hidden"
-        );
-
-
+      if (relation === "其他") {
+        otherGroup.classList.remove("hidden");
         otherInput.focus();
-
       } else {
-
-        otherGroup.classList.add(
-          "hidden"
-        );
-
-
+        otherGroup.classList.add("hidden");
         otherInput.value = "";
-
       }
-
     }
-
 
     // ==========================================================
     // 第一次綁定
     // ==========================================================
 
-    function handleBind() {
+    async function handleBind() {
+      const studentName = document.getElementById("bind-student").value.trim();
+      let relation = document.getElementById("bind-relation").value;
 
-      const studentName =
-        document.getElementById(
-          "bind-student"
-        ).value.trim();
-
-
-      let relation =
-        document.getElementById(
-          "bind-relation"
-        ).value;
-
-
-      if (
-        relation === "其他"
-      ) {
-
-        const otherRelation =
-          document
-            .getElementById(
-              "bind-other-relation"
-            )
-            .value
-            .trim();
-
+      if (relation === "其他") {
+        const otherRelation = document
+          .getElementById("bind-other-relation")
+          .value
+          .trim();
 
         if (!otherRelation) {
-
-          alert(
-            "請填寫您與學員的關係！"
-          );
-
+          alert("請填寫您與學員的關係！");
           return;
-
         }
 
-
-        relation =
-          otherRelation;
-
+        relation = otherRelation;
       }
-
-
-      if (
-        !lineIdToken ||
-        !userLineId
-      ) {
-
-        alert(
-          "目前尚未取得 LINE 身分，請重新從 LINE 開啟系統。"
-        );
-
-        return;
-
-      }
-
 
       if (!studentName) {
-
-        alert(
-          "請輸入學員姓名！"
-        );
-
+        alert("請輸入學員姓名！");
         return;
-
       }
 
+      try {
+        await getCurrentLineIdToken();
 
-      callGasApi(
-        "registerUser",
-        {
+        await callGasApi("registerUser", {
+          idToken: lineIdToken,
+          studentName,
+          relation
+        });
 
-          idToken:
-            lineIdToken,
+        alert("綁定成功！");
 
-          studentName:
-            studentName,
+        userBindings.push({
+          studentName,
+          relation
+        });
 
-          relation:
-            relation
-
-        }
-
-      )
-
-      .then(
-        function() {
-
-          alert(
-            "綁定成功！"
-          );
-
-
-          userBindings.push({
-
-            studentName:
-              studentName,
-
-            relation:
-              relation
-
-          });
-
-
-          document
-            .getElementById(
-              "bind-section"
-            )
-            .classList.add(
-              "hidden"
-            );
-
-
-          showMainSection();
-
-        }
-      )
-
-      .catch(
-        function(err) {
-
-          alert(
-            "綁定失敗：" +
-            (
-              err &&
-              err.message
-                ? err.message
-                : err
-            )
-          );
-
-        }
-      );
-
+        document.getElementById("bind-section").classList.add("hidden");
+        showMainSection();
+      } catch (err) {
+        alert(
+          "綁定失敗：" +
+          (err && err.message ? err.message : err)
+        );
+      }
     }
-
 
     // ==========================================================
     // 顯示主畫面
     // ==========================================================
 
     function showMainSection() {
-
-      document
-        .getElementById(
-          "main-section"
-        )
-        .classList.remove(
-          "hidden"
-        );
-
+      document.getElementById("main-section").classList.remove("hidden");
 
       updateMemberSelect();
 
-
-      document
-        .getElementById(
-          "user-info-text"
-        )
-        .innerText =
-          "👋 您好，系統已自動確認您的 LINE 身分。";
-
+      document.getElementById("user-info-text").innerText =
+        "👋 您好，系統已自動確認您的 LINE 身分。";
 
       onStudentChange();
-
     }
-
 
     // ==========================================================
     // 更新成員選單
     // ==========================================================
 
     function updateMemberSelect() {
+      const select = document.getElementById("student-select");
+      const currentStudent = select.value;
 
-      const select =
-        document.getElementById(
-          "student-select"
-        );
+      select.innerHTML = "";
 
+      userBindings.forEach(function(binding) {
+        const opt = document.createElement("option");
+        opt.value = binding.studentName;
+        opt.text =
+          binding.studentName +
+          "（" +
+          binding.relation +
+          "）";
 
-      const currentStudent =
-        select.value;
-
-
-      select.innerHTML =
-        "";
-
-
-      userBindings.forEach(
-        function(binding) {
-
-          const opt =
-            document.createElement(
-              "option"
-            );
-
-
-          opt.value =
-            binding.studentName;
-
-
-          opt.text =
-            binding.studentName +
-            "（" +
-            binding.relation +
-            "）";
-
-
-          select.appendChild(
-            opt
-          );
-
-        }
-      );
-
-
-      /*
-       * 如果原本選擇的成員仍然存在
-       * 就維持原本選擇
-       */
+        select.appendChild(opt);
+      });
 
       if (
         currentStudent &&
-        userBindings.some(
-          function(binding) {
-            return (
-              binding.studentName ===
-              currentStudent
-            );
-          }
-        )
+        userBindings.some(function(binding) {
+          return binding.studentName === currentStudent;
+        })
       ) {
-
-        select.value =
-          currentStudent;
-
+        select.value = currentStudent;
       }
 
-
-      /*
-       * 如果沒有選擇
-       * 預設選第一位
-       */
-
-      if (
-        !select.value &&
-        userBindings.length > 0
-      ) {
-
-        select.selectedIndex =
-          0;
-
+      if (!select.value && userBindings.length > 0) {
+        select.selectedIndex = 0;
       }
-
 
       updateMemberCount();
-
     }
 
-
     // ==========================================================
-    // 更新目前成員數量
+    // 更新成員數量
     // ==========================================================
 
     function updateMemberCount() {
-
-      const count =
-        userBindings.length;
-
-
-      const countElement =
-        document.getElementById(
-          "member-count"
-        );
-
+      const countElement = document.getElementById("member-count");
 
       if (!countElement) {
         return;
       }
 
-
       countElement.innerText =
         "目前 " +
-        count +
+        userBindings.length +
         " 位成員";
-
     }
-
 
     // ==========================================================
     // 顯示新增成員
     // ==========================================================
 
     function showAddMember() {
-
-      const box =
-        document.getElementById(
-          "add-member-box"
-        );
-
-
-      box.classList.remove(
-        "hidden"
-      );
-
-
-      document
-        .getElementById(
-          "add-student"
-        )
-        .focus();
-
+      const box = document.getElementById("add-member-box");
+      box.classList.remove("hidden");
+      document.getElementById("add-student").focus();
     }
-
 
     // ==========================================================
     // 取消新增成員
     // ==========================================================
 
     function cancelAddMember() {
-
       clearAddMemberForm();
-
-
-      document
-        .getElementById(
-          "add-member-box"
-        )
-        .classList.add(
-          "hidden"
-        );
-
+      document.getElementById("add-member-box").classList.add("hidden");
     }
-
 
     // ==========================================================
     // 清除新增成員表單
     // ==========================================================
 
     function clearAddMemberForm() {
-
-      document
-        .getElementById(
-          "add-student"
-        )
-        .value =
-          "";
-
-
-      document
-        .getElementById(
-          "add-relation"
-        )
-        .value =
-          "爸爸";
-
-
-      document
-        .getElementById(
-          "add-other-relation"
-        )
-        .value =
-          "";
-
-
-      document
-        .getElementById(
-          "add-other-relation-group"
-        )
-        .classList.add(
-          "hidden"
-        );
-
+      document.getElementById("add-student").value = "";
+      document.getElementById("add-relation").value = "爸爸";
+      document.getElementById("add-other-relation").value = "";
+      document.getElementById("add-other-relation-group").classList.add("hidden");
     }
-
 
     // ==========================================================
     // 新增成員：關係選擇
     // ==========================================================
 
     function handleAddRelationChange() {
+      const relation = document.getElementById("add-relation").value;
+      const otherGroup = document.getElementById("add-other-relation-group");
+      const otherInput = document.getElementById("add-other-relation");
 
-      const relation =
-        document.getElementById(
-          "add-relation"
-        ).value;
-
-
-      const otherGroup =
-        document.getElementById(
-          "add-other-relation-group"
-        );
-
-
-      const otherInput =
-        document.getElementById(
-          "add-other-relation"
-        );
-
-
-      if (
-        relation === "其他"
-      ) {
-
-        otherGroup.classList.remove(
-          "hidden"
-        );
-
-
+      if (relation === "其他") {
+        otherGroup.classList.remove("hidden");
         otherInput.focus();
-
       } else {
-
-        otherGroup.classList.add(
-          "hidden"
-        );
-
-
+        otherGroup.classList.add("hidden");
         otherInput.value = "";
-
       }
-
     }
-
 
     // ==========================================================
     // 新增第二、第三位成員
     // ==========================================================
 
-    function handleAddMember() {
+    async function handleAddMember() {
+      const studentName = document.getElementById("add-student").value.trim();
+      let relation = document.getElementById("add-relation").value;
 
-      const studentName =
-        document
-          .getElementById(
-            "add-student"
-          )
+      if (relation === "其他") {
+        const otherRelation = document
+          .getElementById("add-other-relation")
           .value
           .trim();
 
-
-      let relation =
-        document
-          .getElementById(
-            "add-relation"
-          )
-          .value;
-
-
-      /*
-       * 如果選擇其他
-       */
-
-      if (
-        relation === "其他"
-      ) {
-
-        const otherRelation =
-          document
-            .getElementById(
-              "add-other-relation"
-            )
-            .value
-            .trim();
-
-
         if (!otherRelation) {
-
-          alert(
-            "請填寫您與學員的關係！"
-          );
-
+          alert("請填寫您與學員的關係！");
           return;
-
         }
 
-
-        relation =
-          otherRelation;
-
+        relation = otherRelation;
       }
-
-
-      /*
-       * 基本驗證
-       */
 
       if (!studentName) {
-
-        alert(
-          "請輸入學員姓名！"
-        );
-
+        alert("請輸入學員姓名！");
         return;
-
       }
 
-
-      if (
-        !lineIdToken ||
-        !userLineId
-      ) {
-
-        alert(
-          "尚未取得 LINE 身分，請重新開啟系統。"
-        );
-
-        return;
-
-      }
-
-
-      /*
-       * 防止前端重複新增
-       */
-
-      const alreadyExists =
-        userBindings.some(
-          function(binding) {
-
-            return (
-              binding.studentName ===
-              studentName
-            );
-
-          }
-        );
-
+      const alreadyExists = userBindings.some(function(binding) {
+        return binding.studentName === studentName;
+      });
 
       if (alreadyExists) {
-
-        alert(
-          "這位成員已經綁定，不需要重複新增。"
-        );
-
+        alert("這位成員已經綁定，不需要重複新增。");
         return;
-
       }
 
+      try {
+        await getCurrentLineIdToken();
 
-      /*
-       * 呼叫 GAS
-       */
+        await callGasApi("registerUser", {
+          idToken: lineIdToken,
+          studentName,
+          relation
+        });
 
-      callGasApi(
-        "registerUser",
-        {
+        alert("新增成員成功！");
 
-          idToken:
-            lineIdToken,
+        userBindings.push({
+          studentName,
+          relation
+        });
 
-          studentName:
-            studentName,
+        updateMemberSelect();
 
-          relation:
-            relation
+        document.getElementById("student-select").value = studentName;
 
-        }
-
-      )
-
-      .then(
-        function() {
-
-          alert(
-            "新增成員成功！"
-          );
-
-
-          /*
-           * 加入目前記憶體
-           */
-
-          userBindings.push({
-
-            studentName:
-              studentName,
-
-            relation:
-              relation
-
-          });
-
-
-          /*
-           * 更新下拉選單
-           */
-
-          updateMemberSelect();
-
-
-          /*
-           * 自動切換到剛新增的成員
-           */
-
-          document
-            .getElementById(
-              "student-select"
-            )
-            .value =
-              studentName;
-
-
-          /*
-           * 關閉新增區
-           */
-
-          cancelAddMember();
-
-
-          /*
-           * 重新載入資料
-           */
-
-          onStudentChange();
-
-        }
-      )
-
-      .catch(
-        function(err) {
-
-          alert(
-            "新增成員失敗：" +
-            (
-              err &&
-              err.message
-                ? err.message
-                : err
-            )
-          );
-
-        }
-      );
-
+        cancelAddMember();
+        onStudentChange();
+      } catch (err) {
+        alert(
+          "新增成員失敗：" +
+          (err && err.message ? err.message : err)
+        );
+      }
     }
-
 
     // ==========================================================
     // 成員切換
     // ==========================================================
 
     function onStudentChange() {
-
       loadHistory();
 
-
-      if (
-        currentTab === "makeup"
-      ) {
-
+      if (currentTab === "makeup") {
         loadValidLeaveDates();
-
       }
-
     }
-
 
     // ==========================================================
     // 分頁
     // ==========================================================
 
-    function switchTab(
-      tab
-    ) {
+    function switchTab(tab) {
+      currentTab = tab;
 
-      currentTab =
-        tab;
+      const tabs = document.querySelectorAll(".tab");
 
+      tabs.forEach(function(tabElement) {
+        tabElement.classList.remove("active");
+      });
 
-      const tabs =
-        document.querySelectorAll(
-          ".tab"
-        );
+      if (tab === "leave") {
+        tabs[0].classList.add("active");
 
+        document.getElementById("leave-form-pane").classList.remove("hidden");
+        document.getElementById("makeup-form-pane").classList.add("hidden");
 
-      tabs.forEach(
-        function(tabElement) {
-
-          tabElement.classList.remove(
-            "active"
-          );
-
-        }
-      );
-
-
-      if (
-        tab === "leave"
-      ) {
-
-        tabs[0].classList.add(
-          "active"
-        );
-
-
-        document
-          .getElementById(
-            "leave-form-pane"
-          )
-          .classList.remove(
-            "hidden"
-          );
-
-
-        document
-          .getElementById(
-            "makeup-form-pane"
-          )
-          .classList.add(
-            "hidden"
-          );
-
-
-        document
-          .getElementById(
-            "history-title"
-          )
-          .innerText =
-            "📋 近期請假紀錄";
-
-
+        document.getElementById("history-title").innerText =
+          "📋 近期請假紀錄";
       } else {
+        tabs[1].classList.add("active");
 
-        tabs[1].classList.add(
-          "active"
-        );
+        document.getElementById("makeup-form-pane").classList.remove("hidden");
+        document.getElementById("leave-form-pane").classList.add("hidden");
 
-
-        document
-          .getElementById(
-            "makeup-form-pane"
-          )
-          .classList.remove(
-            "hidden"
-          );
-
-
-        document
-          .getElementById(
-            "leave-form-pane"
-          )
-          .classList.add(
-            "hidden"
-          );
-
-
-        document
-          .getElementById(
-            "history-title"
-          )
-          .innerText =
-            "📋 近期預約補課紀錄";
-
+        document.getElementById("history-title").innerText =
+          "📋 近期預約補課紀錄";
 
         loadValidLeaveDates();
-
       }
 
-
       loadHistory();
-
     }
-
 
     // ==========================================================
     // 補課時段
     // ==========================================================
 
     function handleSlotChange() {
+      const slotSelect = document.getElementById("makeup-slot-select").value;
+      const otherGroup = document.getElementById("makeup-other-group");
 
-      const slotSelect =
-        document
-          .getElementById(
-            "makeup-slot-select"
-          )
-          .value;
-
-
-      const otherGroup =
-        document.getElementById(
-          "makeup-other-group"
-        );
-
-
-      if (
-        slotSelect === "其他"
-      ) {
-
-        otherGroup.classList.remove(
-          "hidden"
-        );
-
+      if (slotSelect === "其他") {
+        otherGroup.classList.remove("hidden");
       } else {
-
-        otherGroup.classList.add(
-          "hidden"
-        );
-
-
-        document
-          .getElementById(
-            "makeup-other-input"
-          )
-          .value =
-            "";
-
+        otherGroup.classList.add("hidden");
+        document.getElementById("makeup-other-input").value = "";
       }
-
     }
-
 
     // ==========================================================
     // 載入歷史紀錄
     // ==========================================================
 
-    function loadHistory() {
+    async function loadHistory() {
+      const select = document.getElementById("student-select");
 
-      const select =
-        document.getElementById(
-          "student-select"
-        );
-
-
-      if (
-        !select ||
-        !select.value
-      ) {
-
+      if (!select || !select.value) {
         return;
-
       }
 
-
-      const studentName =
-        select.value;
-
-
+      const studentName = select.value;
       const action =
         currentTab === "leave"
           ? "getLeaveHistory"
           : "getMakeupHistory";
 
+      try {
+        const history = await callGasApi(action, {
+          idToken: lineIdToken,
+          studentName
+        });
 
-      callGasApi(
-        action,
-        {
-
-          idToken:
-            lineIdToken,
-
-          studentName:
-            studentName
-
-        }
-      )
-
-      .then(
-        renderHistory
-      )
-
-      .catch(
-        onServerFail
-      );
-
+        renderHistory(history);
+      } catch (err) {
+        onServerFail(err);
+      }
     }
-
 
     // ==========================================================
     // 顯示歷史紀錄
     // ==========================================================
 
-    function renderHistory(
-      history
-    ) {
+    function renderHistory(history) {
+      const listDiv = document.getElementById("history-list");
 
-      const listDiv =
-        document.getElementById(
-          "history-list"
-        );
-
-
-      if (
-        !history ||
-        history.length === 0
-      ) {
-
+      if (!history || history.length === 0) {
         listDiv.innerHTML =
-          "<div " +
-          "style='color:#94a3b8;" +
-          "font-size:13px;" +
-          "text-align:center;" +
-          "padding:10px;'>" +
-
+          "<div style='color:#94a3b8;font-size:13px;text-align:center;padding:10px;'>" +
           "目前沒有相關紀錄" +
-
           "</div>";
 
-
         return;
-
       }
 
+      let html = "";
 
-      let html =
-        "";
+      history.forEach(function(h) {
+        let info = "";
 
-
-      history.forEach(
-        function(h) {
-
-          let info;
-
-
-          if (
-            currentTab === "leave"
-          ) {
-
-            info =
-              "原因：" +
-              escapeHtml(
-                h.reason || "無"
-              );
-
-
-          } else {
-
-            info =
-              "原請假日期：" +
-              escapeHtml(
-                h.originalDate ||
-                "未指定"
-              ) +
-
-              " | 備註：" +
-
-              escapeHtml(
-                h.remark || ""
-              );
-
-          }
-
-
-          html +=
-
-            "<div class='history-card'>" +
-
-            "<b>日期：" +
-
-            escapeHtml(
-              h.date || ""
-            ) +
-
-            "</b> | 狀態：" +
-
-            "<span style='color:#4f46e5;'>" +
-
-            escapeHtml(
-              h.status || ""
-            ) +
-
-            "</span><br>" +
-
-            info +
-
-            "</div>";
-
+        if (currentTab === "leave") {
+          info =
+            "原因：" +
+            escapeHtml(h.reason || "無");
+        } else {
+          info =
+            "原請假日期：" +
+            escapeHtml(h.originalDate || "未指定") +
+            " | 備註：" +
+            escapeHtml(h.remark || "");
         }
-      );
 
+        const deleteButton =
+          currentTab === "leave" &&
+          h.status === "已生效"
+            ? "<button class='delete-leave-button' onclick='deleteLeave(" +
+              JSON.stringify(h.date) +
+              ")'>刪除</button>"
+            : "";
 
-      listDiv.innerHTML =
-        html;
+        html +=
+          "<div class='history-card'>" +
+          "<div class='history-row'>" +
+          "<div class='history-content'>" +
+          "<b>日期：" +
+          escapeHtml(h.date || "") +
+          "</b> | 狀態：" +
+          "<span style='color:#4f46e5;'>" +
+          escapeHtml(h.status || "") +
+          "</span><br>" +
+          info +
+          "</div>" +
+          deleteButton +
+          "</div>" +
+          "</div>";
+      });
 
+      listDiv.innerHTML = html;
     }
 
+    // ==========================================================
+    // 刪除已生效請假
+    // ==========================================================
+
+    async function deleteLeave(date) {
+      const studentName = document.getElementById("student-select").value;
+
+      if (!studentName || !date) {
+        return;
+      }
+
+      const confirmed = confirm(
+        "確定要刪除 " +
+        date +
+        " 的請假紀錄嗎？\n\n刪除後將無法復原。"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      try {
+        await callGasApi("deleteLeaveRecord", {
+          idToken: lineIdToken,
+          studentName,
+          date
+        });
+
+        alert("請假紀錄已刪除。");
+
+        await loadHistory();
+
+        if (currentTab === "makeup") {
+          loadValidLeaveDates();
+        }
+      } catch (err) {
+        alert(
+          "刪除失敗：" +
+          (err && err.message ? err.message : err)
+        );
+      }
+    }
 
     // ==========================================================
     // 載入可補課的請假日期
     // ==========================================================
 
-    function loadValidLeaveDates() {
-
-      const studentName =
-        document
-          .getElementById(
-            "student-select"
-          )
-          .value;
-
-
-      const selectOriginal =
-        document.getElementById(
-          "makeup-original-date"
-        );
-
+    async function loadValidLeaveDates() {
+      const studentName = document.getElementById("student-select").value;
+      const selectOriginal = document.getElementById("makeup-original-date");
 
       selectOriginal.innerHTML =
-        "<option value=''>" +
-        "載入中..." +
-        "</option>";
-
+        "<option value=''>載入中...</option>";
 
       if (!studentName) {
-
         selectOriginal.innerHTML =
-          "<option value=''>" +
-          "-- 請先選擇成員 --" +
-          "</option>";
-
+          "<option value=''>-- 請先選擇成員 --</option>";
 
         return;
-
       }
 
+      try {
+        const leaves = await callGasApi("getValidLeaveDates", {
+          idToken: lineIdToken,
+          studentName
+        });
 
-      callGasApi(
-        "getValidLeaveDates",
-        {
+        selectOriginal.innerHTML = "";
 
-          idToken:
-            lineIdToken,
-
-          studentName:
-            studentName
-
-        }
-
-      )
-
-      .then(
-        function(leaves) {
-
+        if (!leaves || leaves.length === 0) {
           selectOriginal.innerHTML =
-            "";
+            "<option value=''>⚠️ 該成員目前沒有可用的請假紀錄</option>";
 
-
-          if (
-            !leaves ||
-            leaves.length === 0
-          ) {
-
-            selectOriginal.innerHTML =
-              "<option value=''>" +
-              "⚠️ 該成員目前沒有可用的請假紀錄" +
-              "</option>";
-
-
-            return;
-
-          }
-
-
-          const defaultOpt =
-            document.createElement(
-              "option"
-            );
-
-
-          defaultOpt.value =
-            "";
-
-
-          defaultOpt.text =
-            "-- 請選擇要補哪一天的缺 --";
-
-
-          selectOriginal.appendChild(
-            defaultOpt
-          );
-
-
-          leaves.forEach(
-            function(leave) {
-
-              const opt =
-                document.createElement(
-                  "option"
-                );
-
-
-              opt.value =
-                leave.date;
-
-
-              opt.text =
-                "📅 原請假日期：" +
-                leave.date +
-                "（原因：" +
-                (
-                  leave.reason ||
-                  "無"
-                ) +
-                "）";
-
-
-              selectOriginal.appendChild(
-                opt
-              );
-
-            }
-          );
-
+          return;
         }
-      )
 
-      .catch(
-        onServerFail
-      );
+        const defaultOpt = document.createElement("option");
+        defaultOpt.value = "";
+        defaultOpt.text = "-- 請選擇要補哪一天的缺 --";
+        selectOriginal.appendChild(defaultOpt);
 
+        leaves.forEach(function(leave) {
+          const opt = document.createElement("option");
+
+          opt.value = leave.date;
+          opt.text =
+            "📅 原請假日期：" +
+            leave.date +
+            "（原因：" +
+            (leave.reason || "無") +
+            "）";
+
+          selectOriginal.appendChild(opt);
+        });
+      } catch (err) {
+        onServerFail(err);
+      }
     }
-
 
     // ==========================================================
     // 送出請假
     // ==========================================================
 
-    function submitLeave() {
-
-      const studentName =
-        document
-          .getElementById(
-            "student-select"
-          )
-          .value;
-
-
-      const date =
-        document
-          .getElementById(
-            "leave-date"
-          )
-          .value;
-
-
-      const remark =
-        document
-          .getElementById(
-            "leave-remark"
-          )
-          .value;
-
-
-      if (
-        !lineIdToken ||
-        !userLineId
-      ) {
-
-        alert(
-          "尚未取得 LINE 身分，請重新開啟系統。"
-        );
-
-        return;
-
-      }
-
+    async function submitLeave() {
+      const studentName = document.getElementById("student-select").value;
+      const date = document.getElementById("leave-date").value;
+      const remark = document.getElementById("leave-remark").value;
 
       if (!studentName) {
-
-        alert(
-          "請先選擇成員！"
-        );
-
+        alert("請先選擇成員！");
         return;
-
       }
-
 
       if (!date) {
-
-        alert(
-          "請選擇請假日期！"
-        );
-
+        alert("請選擇請假日期！");
         return;
-
       }
 
+      const binding = userBindings.find(function(b) {
+        return b.studentName === studentName;
+      });
 
-      const binding =
-        userBindings.find(
-          function(b) {
+      try {
+        await callGasApi("saveLeaveRecord", {
+          idToken: lineIdToken,
+          relation: binding ? binding.relation : "家長",
+          studentName,
+          date,
+          remark
+        });
 
-            return (
-              b.studentName ===
-              studentName
-            );
+        alert("請假申請已送出！");
 
-          }
+        document.getElementById("leave-date").value = "";
+        document.getElementById("leave-remark").value = "";
+
+        loadHistory();
+      } catch (err) {
+        alert(
+          "送出失敗：" +
+          (err && err.message ? err.message : err)
         );
-
-
-      callGasApi(
-        "saveLeaveRecord",
-        {
-
-          idToken:
-            lineIdToken,
-
-          relation:
-            binding
-              ? binding.relation
-              : "家長",
-
-          studentName:
-            studentName,
-
-          date:
-            date,
-
-          remark:
-            remark
-
-        }
-
-      )
-
-      .then(
-        function() {
-
-          alert(
-            "請假申請已送出！"
-          );
-
-
-          document
-            .getElementById(
-              "leave-date"
-            )
-            .value =
-              "";
-
-
-          document
-            .getElementById(
-              "leave-remark"
-            )
-            .value =
-              "";
-
-
-          loadHistory();
-
-        }
-      )
-
-      .catch(
-        function(err) {
-
-          alert(
-            "送出失敗：" +
-            (
-              err &&
-              err.message
-                ? err.message
-                : err
-            )
-          );
-
-        }
-      );
-
+      }
     }
-
 
     // ==========================================================
     // 送出補課
     // ==========================================================
 
-    function submitMakeup() {
-
-      const studentName =
-        document
-          .getElementById(
-            "student-select"
-          )
-          .value;
-
-
-      const originalDate =
-        document
-          .getElementById(
-            "makeup-original-date"
-          )
-          .value;
-
-
-      const date =
-        document
-          .getElementById(
-            "makeup-date"
-          )
-          .value;
-
-
-      const slotSelect =
-        document
-          .getElementById(
-            "makeup-slot-select"
-          )
-          .value;
-
-
-      const otherInput =
-        document
-          .getElementById(
-            "makeup-other-input"
-          )
-          .value
-          .trim();
-
+    async function submitMakeup() {
+      const studentName = document.getElementById("student-select").value;
+      const originalDate = document.getElementById("makeup-original-date").value;
+      const date = document.getElementById("makeup-date").value;
+      const slotSelect = document.getElementById("makeup-slot-select").value;
+      const otherInput = document.getElementById("makeup-other-input").value.trim();
 
       const remark =
         slotSelect === "其他"
-
-          ? (
-              otherInput
-                ? "其他：" +
-                  otherInput
-                : "其他"
-            )
-
+          ? otherInput
+            ? "其他：" + otherInput
+            : "其他"
           : slotSelect;
 
-
-      if (
-        !lineIdToken ||
-        !userLineId
-      ) {
-
-        alert(
-          "尚未取得 LINE 身分，請重新開啟系統。"
-        );
-
-        return;
-
-      }
-
-
       if (!studentName) {
-
-        alert(
-          "請先選擇成員！"
-        );
-
+        alert("請先選擇成員！");
         return;
-
       }
-
 
       if (!originalDate) {
-
-        alert(
-          "請選擇您要抵扣的原請假日期！"
-        );
-
+        alert("請選擇您要抵扣的原請假日期！");
         return;
-
       }
-
 
       if (!date) {
-
-        alert(
-          "請選擇預約補課日期！"
-        );
-
+        alert("請選擇預約補課日期！");
         return;
-
       }
-
 
       if (!slotSelect) {
-
-        alert(
-          "請選擇補課時段！"
-        );
-
+        alert("請選擇補課時段！");
         return;
-
       }
 
-
-      if (
-        slotSelect === "其他" &&
-        !otherInput
-      ) {
-
-        alert(
-          "請填寫其他補課時段 / 備註！"
-        );
-
+      if (slotSelect === "其他" && !otherInput) {
+        alert("請填寫其他補課時段 / 備註！");
         return;
-
       }
 
+      const binding = userBindings.find(function(b) {
+        return b.studentName === studentName;
+      });
 
-      const binding =
-        userBindings.find(
-          function(b) {
+      try {
+        await callGasApi("saveMakeupRecord", {
+          idToken: lineIdToken,
+          relation: binding ? binding.relation : "家長",
+          studentName,
+          originalDate,
+          date,
+          remark
+        });
 
-            return (
-              b.studentName ===
-              studentName
-            );
+        alert("補課預約已送出！");
 
-          }
+        document.getElementById("makeup-date").value = "";
+        document.getElementById("makeup-slot-select").value = "";
+        document.getElementById("makeup-other-input").value = "";
+        document.getElementById("makeup-other-group").classList.add("hidden");
+
+        loadValidLeaveDates();
+        loadHistory();
+      } catch (err) {
+        alert(
+          "送出失敗：" +
+          (err && err.message ? err.message : err)
         );
-
-
-      callGasApi(
-        "saveMakeupRecord",
-        {
-
-          idToken:
-            lineIdToken,
-
-          relation:
-            binding
-              ? binding.relation
-              : "家長",
-
-          studentName:
-            studentName,
-
-          originalDate:
-            originalDate,
-
-          date:
-            date,
-
-          remark:
-            remark
-
-        }
-
-      )
-
-      .then(
-        function() {
-
-          alert(
-            "補課預約已送出！"
-          );
-
-
-          document
-            .getElementById(
-              "makeup-date"
-            )
-            .value =
-              "";
-
-
-          document
-            .getElementById(
-              "makeup-slot-select"
-            )
-            .value =
-              "";
-
-
-          document
-            .getElementById(
-              "makeup-other-input"
-            )
-            .value =
-              "";
-
-
-          document
-            .getElementById(
-              "makeup-other-group"
-            )
-            .classList.add(
-              "hidden"
-            );
-
-
-          loadValidLeaveDates();
-
-          loadHistory();
-
-        }
-      )
-
-      .catch(
-        function(err) {
-
-          alert(
-            "送出失敗：" +
-            (
-              err &&
-              err.message
-                ? err.message
-                : err
-            )
-          );
-
-        }
-      );
-
+      }
     }
-
 
     // ==========================================================
     // LINE ID 查詢結果
     // ==========================================================
 
-    function onCheckBindResult(
-      result
-    ) {
+    function onCheckBindResult(result) {
+      userBindings = Array.isArray(result) ? result : [];
 
-      userBindings =
-        Array.isArray(result)
-          ? result
-          : [];
+      document.getElementById("loading").classList.add("hidden");
 
-
-      document
-        .getElementById(
-          "loading"
-        )
-        .classList.add(
-          "hidden"
-        );
-
-
-      if (
-        userBindings.length === 0
-      ) {
-
-        /*
-         * 第一次使用
-         */
-
-        document
-          .getElementById(
-            "bind-section"
-          )
-          .classList.remove(
-            "hidden"
-          );
-
-
+      if (userBindings.length === 0) {
+        document.getElementById("bind-section").classList.remove("hidden");
       } else {
-
-        /*
-         * 已經有成員
-         */
-
         showMainSection();
-
       }
-
     }
-
-
   </script>
-
 </body>
-
 </html>
+```
