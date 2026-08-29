@@ -660,73 +660,232 @@
 
     window.addEventListener("load", initSystem);
 
-    async function initSystem() {
-      const loading = document.getElementById("loading");
+   async function initSystem() {
+  const loading = document.getElementById("loading");
 
-      try {
-        if (typeof liff === "undefined") {
-          throw new Error("LIFF SDK 尚未載入。");
+  try {
+    if (typeof liff === "undefined") {
+      throw new Error("LIFF SDK 尚未載入。");
+    }
+
+    loading.innerHTML = "正在初始化 LINE 身分...";
+
+    await liff.init({
+      liffId: "2011307172-d3esgseq",
+      withLoginOnExternalBrowser: true
+    });
+
+    console.log(
+      "LIFF 初始化成功",
+      "版本：", liff.getVersion(),
+      "LINE App：", liff.isInClient(),
+      "登入：", liff.isLoggedIn()
+    );
+
+    /*
+     * ------------------------------------------------------------
+     * 外部瀏覽器如果尚未登入
+     * 讓 LIFF 自動進入 LINE Login
+     * ------------------------------------------------------------
+     */
+    if (!liff.isInClient() && !liff.isLoggedIn()) {
+      loading.innerHTML = "正在前往 LINE 登入...";
+      liff.login({
+        redirectUri: window.location.href
+      });
+      return;
+    }
+
+    /*
+     * ------------------------------------------------------------
+     * 取得新的 ID Token
+     * ------------------------------------------------------------
+     */
+    loading.innerHTML = "正在取得 LINE 身分驗證資訊...";
+
+    const idToken = liff.getIDToken();
+
+    if (!idToken) {
+      throw new Error(
+        "無法取得 LINE ID Token。請重新登入 LINE。"
+      );
+    }
+
+    lineIdToken = String(idToken);
+
+    console.log(
+      "已取得 LINE ID Token"
+    );
+
+    /*
+     * ------------------------------------------------------------
+     * 第一次驗證 LINE 身分
+     * ------------------------------------------------------------
+     */
+    loading.innerHTML = "正在驗證 LINE 身分...";
+
+    let verifiedUser;
+
+    try {
+      verifiedUser = await callGasApi(
+        "verifyLineIdToken",
+        {
+          idToken: lineIdToken
+        }
+      );
+
+    } catch (verifyError) {
+
+      const errorMessage =
+        verifyError && verifyError.message
+          ? String(verifyError.message)
+          : String(verifyError);
+
+      console.error(
+        "LINE ID Token 驗證失敗：",
+        errorMessage
+      );
+
+      /*
+       * ----------------------------------------------------------
+       * ★ 核心修正
+       *
+       * 如果 Chrome / Edge 保存的是舊 Token，
+       * 伺服器會回傳：
+       *
+       * HTTP 400
+       * IdToken expired
+       *
+       * 此時不要直接顯示錯誤。
+       * 清掉 LIFF 登入狀態，再重新 LINE Login。
+       * ----------------------------------------------------------
+       */
+      if (
+        errorMessage.includes("IdToken expired") ||
+        errorMessage.includes("id_token expired") ||
+        errorMessage.includes("expired")
+      ) {
+
+        const reloginKey =
+          "newwu_liff_relogin_attempt";
+
+        const alreadyRelogin =
+          sessionStorage.getItem(
+            reloginKey
+          );
+
+        /*
+         * 避免登入失敗後無限迴圈
+         */
+        if (!alreadyRelogin) {
+
+          sessionStorage.setItem(
+            reloginKey,
+            "1"
+          );
+
+          console.warn(
+            "ID Token 已過期，重新進行 LINE Login..."
+          );
+
+          try {
+            if (liff.isLoggedIn()) {
+              liff.logout();
+            }
+          } catch (logoutError) {
+            console.warn(
+              "LIFF logout 發生錯誤：",
+              logoutError
+            );
+          }
+
+          loading.innerHTML =
+            "登入資訊已過期，正在重新登入 LINE...";
+
+          setTimeout(function() {
+            liff.login({
+              redirectUri: window.location.href
+            });
+          }, 300);
+
+          return;
         }
 
-        loading.innerHTML = "正在初始化 LINE 身分...";
-
-        await liff.init({
-          liffId: LIFF_ID,
-          withLoginOnExternalBrowser: true
-        });
-
-        liffInitialized = true;
-
-        console.log(
-          "LIFF 初始化成功",
-          liff.getVersion(),
-          liff.isInClient(),
-          liff.isLoggedIn()
-        );
-
-        if (!liff.isLoggedIn()) {
-          throw new Error("LINE 登入尚未完成。請重新從 LINE 開啟系統。");
-        }
-
-        loading.innerHTML = "正在取得 LINE 身分驗證資訊...";
-
-        lineIdToken = await getCurrentLineIdToken();
-
-        loading.innerHTML = "正在驗證 LINE 身分...";
-
-        const verifiedUser = await sendGasApiRequest(
-          "verifyLineIdToken",
-          { idToken: lineIdToken }
-        );
-
-        if (!verifiedUser || !verifiedUser.userId) {
-          throw new Error("伺服器沒有回傳有效的 LINE User ID。");
-        }
-
-        userLineId = String(verifiedUser.userId).trim();
-
-        console.log(
-          "LINE User ID 已由 LINE Platform 驗證取得",
-          userLineId
-        );
-
-        loading.innerHTML = "正在確認您的會員資料...";
-
-        const bindings = await callGasApi(
-          "checkLineId",
-          { idToken: lineIdToken }
-        );
-
-        onCheckBindResult(bindings);
-      } catch (err) {
-        console.error("LIFF / API ERROR:", err);
-
-        showError(
-          "LINE 身分確認失敗",
-          err && err.message ? err.message : err
+        /*
+         * 如果已經重新登入過一次還是失敗，
+         * 清掉旗標，避免一直轉圈。
+         */
+        sessionStorage.removeItem(
+          reloginKey
         );
       }
+
+      throw verifyError;
     }
+
+    /*
+     * ------------------------------------------------------------
+     * 驗證成功
+     * ------------------------------------------------------------
+     */
+    sessionStorage.removeItem(
+      "newwu_liff_relogin_attempt"
+    );
+
+    if (
+      !verifiedUser ||
+      !verifiedUser.userId
+    ) {
+      throw new Error(
+        "伺服器沒有回傳有效的 LINE User ID。"
+      );
+    }
+
+    userLineId =
+      String(
+        verifiedUser.userId
+      ).trim();
+
+    console.log(
+      "LINE User ID 已由 LINE Platform 驗證取得：",
+      userLineId
+    );
+
+    /*
+     * ------------------------------------------------------------
+     * 查詢會員綁定
+     * ------------------------------------------------------------
+     */
+    loading.innerHTML =
+      "正在確認您的會員資料...";
+
+    const bindings =
+      await callGasApi(
+        "checkLineId",
+        {
+          idToken: lineIdToken
+        }
+      );
+
+    onCheckBindResult(
+      bindings
+    );
+
+  } catch (err) {
+
+    console.error(
+      "LIFF / API ERROR:",
+      err
+    );
+
+    showError(
+      "LINE 身分確認失敗",
+      err && err.message
+        ? err.message
+        : err
+    );
+  }
+}
 
     // ==========================================================
     // 顯示錯誤
