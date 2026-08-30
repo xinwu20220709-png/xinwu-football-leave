@@ -2867,6 +2867,9 @@ async function loadValidLeaveDates() {
           ) +
           "）";
 
+        // 【修改重點 1】將後端傳來的 rowNumber 綁定到 option 的 dataset 屬性中
+        option.dataset.rowNumber = leave.rowNumber !== undefined ? leave.rowNumber : '';
+
 
         select.appendChild(
           option
@@ -3079,12 +3082,13 @@ async function submitMakeup() {
       .value;
 
 
-  const originalDate =
+  const originalDateSelect =
     document
       .getElementById(
         "makeup-original-date"
-      )
-      .value;
+      );
+
+  const originalDate = originalDateSelect.value;
 
 
   const date =
@@ -3122,6 +3126,13 @@ async function submitMakeup() {
     );
 
     return;
+  }
+
+
+  // 【修改重點 2】透過 selectedOptions 取得當前被選中的 option 元素，並讀取其 dataset.rowNumber
+  let rowNumber = '';
+  if (originalDateSelect.selectedOptions.length > 0) {
+    rowNumber = originalDateSelect.selectedOptions[0].dataset.rowNumber || '';
   }
 
 
@@ -3172,7 +3183,10 @@ async function submitMakeup() {
           originalDate,
 
         date:
-          date
+          date,
+
+        rowNumber:
+          rowNumber // 【修改重點 3】將抓到的 rowNumber 傳遞給後端 API
 
       }
     );
