@@ -807,58 +807,6 @@
 
       </div>     
 
-      <!-- 補齊修復：補課時段與自訂備註 UI -->
-      <div class="form-group">
-
-        <label>
-          補課時段
-        </label>
-
-        <select
-          id="makeup-slot-select"
-          onchange="handleSlotChange()"
-        >
-          <option value="">-- 請選擇補課時段 --</option>
-
-          <option value="上午班 (09:00-11:00)">
-            上午班 (09:00-11:00)
-          </option>
-
-          <option value="下午班 (14:00-16:00)">
-            下午班 (14:00-16:00)
-          </option>
-
-          <option value="傍晚班 (16:30-18:30)">
-            傍晚班 (16:30-18:30)
-          </option>
-
-          <option value="其他">
-            其他（自行填寫）
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div
-        class="form-group hidden"
-        id="makeup-other-group"
-      >
-
-        <label>
-          請說明其他補課時段 / 備註
-        </label>
-
-        <input
-          type="text"
-          id="makeup-other-input"
-          maxlength="100"
-          placeholder="例如：19:00-20:30 或教練特約班"
-        >
-
-      </div>
-
 
       <button
         id="submit-makeup-button"
@@ -1052,6 +1000,9 @@ window.addEventListener(
 // 呼叫 GAS
 // ================================================================
 
+// ================================================================
+// 改用 Fetch API 直接呼叫 GAS，徹底解決 X-Frame-Options 攔截問題
+// ================================================================
 function sendGasApiRequest(action, payload) {
   return new Promise(function(resolve, reject) {
     const bodyData = Object.assign(
@@ -1060,8 +1011,10 @@ function sendGasApiRequest(action, payload) {
       { action: action }
     );
 
+    // 使用 no-cors 或標準 fetch (GAS 接受 POST text/plain 或 application/json)
     fetch(GAS_API_URL, {
       method: "POST",
+      // 不設定會引起 CORS preflight 複雜驗證的標頭，直接送字串
       body: JSON.stringify(bodyData)
     })
     .then(function(response) {
@@ -1084,6 +1037,8 @@ function sendGasApiRequest(action, payload) {
     });
   });
 }
+
+// 移除原本複雜的 iframe message 監聽（保留空陣列或直接刪除舊的 message event listener）
 
 
 // ================================================================
@@ -1397,6 +1352,8 @@ async function getCurrentLineIdToken() {
 
 // ================================================================
 // API wrapper
+//
+// 每一次 API 都重新取得 token。
 // ================================================================
 
 async function callGasApi(
@@ -1989,6 +1946,10 @@ async function handleBind() {
     );
 
 
+    // ------------------------------------------------------------
+    // 重新從伺服器取得完整綁定
+    // ------------------------------------------------------------
+
     userBindings =
       await callGasApi(
         "checkLineId",
@@ -2358,6 +2319,10 @@ async function handleAddMember() {
       );
 
 
+    // ------------------------------------------------------------
+    // 從伺服器重新取得
+    // ------------------------------------------------------------
+
     userBindings =
       await callGasApi(
         "checkLineId",
@@ -2540,40 +2505,6 @@ function switchTab(
 
 
   loadHistory();
-}
-
-
-// ================================================================
-// 補課時段
-// ================================================================
-
-function handleSlotChange() {
-
-  const slotSelect = document.getElementById("makeup-slot-select");
-  const value = slotSelect ? slotSelect.value : "";
-
-
-  const group =
-    document
-      .getElementById(
-        "makeup-other-group"
-      );
-
-
-  if (
-    value === "其他"
-  ) {
-
-    if (group) group.classList.remove("hidden");
-
-  } else {
-
-    if (group) group.classList.add("hidden");
-
-
-    const otherInput = document.getElementById("makeup-other-input");
-    if (otherInput) otherInput.value = "";
-  }
 }
 
 
@@ -2834,7 +2765,7 @@ async function loadValidLeaveDates() {
       .getElementById(
         "student-select"
       )
-      ?.value;
+      .value;
 
 
   const select =
@@ -2842,9 +2773,6 @@ async function loadValidLeaveDates() {
       .getElementById(
         "makeup-original-date"
       );
-
-
-  if (!select) return;
 
 
   select.innerHTML =
@@ -2975,7 +2903,7 @@ async function submitLeave() {
       .getElementById(
         "student-select"
       )
-      ?.value;
+      .value;
 
 
   const date =
@@ -2983,7 +2911,7 @@ async function submitLeave() {
       .getElementById(
         "leave-date"
       )
-      ?.value;
+      .value;
 
 
   const remark =
@@ -2991,7 +2919,7 @@ async function submitLeave() {
       .getElementById(
         "leave-remark"
       )
-      ?.value;
+      .value;
 
 
   if (!name) {
@@ -3036,10 +2964,11 @@ async function submitLeave() {
     );
 
 
-  if (button) {
-    button.disabled = true;
-    button.textContent = "送出中...";
-  }
+  button.disabled =
+    true;
+
+  button.textContent =
+    "送出中...";
 
 
   try {
@@ -3071,12 +3000,20 @@ async function submitLeave() {
     );
 
 
-    const leaveDateEl = document.getElementById("leave-date");
-    if (leaveDateEl) leaveDateEl.value = todayString();
+    document
+      .getElementById(
+        "leave-date"
+      )
+      .value =
+      todayString();
 
 
-    const leaveRemarkEl = document.getElementById("leave-remark");
-    if (leaveRemarkEl) leaveRemarkEl.value = "";
+    document
+      .getElementById(
+        "leave-remark"
+      )
+      .value =
+      "";
 
 
     await loadHistory();
@@ -3111,10 +3048,11 @@ async function submitLeave() {
     submittingState.leave =
       false;
 
-    if (button) {
-      button.disabled = false;
-      button.textContent = "送出請假申請";
-    }
+    button.disabled =
+      false;
+
+    button.textContent =
+      "送出請假申請";
   }
 }
 
@@ -3138,7 +3076,7 @@ async function submitMakeup() {
       .getElementById(
         "student-select"
       )
-      ?.value;
+      .value;
 
 
   const originalDate =
@@ -3146,7 +3084,7 @@ async function submitMakeup() {
       .getElementById(
         "makeup-original-date"
       )
-      ?.value;
+      .value;
 
 
   const date =
@@ -3154,24 +3092,7 @@ async function submitMakeup() {
       .getElementById(
         "makeup-date"
       )
-      ?.value;
-
-
-  const slot =
-    document
-      .getElementById(
-        "makeup-slot-select"
-      )
-      ?.value;
-
-
-  const other =
-    document
-      .getElementById(
-        "makeup-other-input"
-      )
-      ?.value
-      ?.trim() || "";
+      .value;
 
 
   if (!name) {
@@ -3204,29 +3125,6 @@ async function submitMakeup() {
   }
 
 
-  if (!slot) {
-
-    alert(
-      "請選擇補課時段！"
-    );
-
-    return;
-  }
-
-
-  if (
-    slot === "其他" &&
-    !other
-  ) {
-
-    alert(
-      "請填寫其他補課時段 / 備註！"
-    );
-
-    return;
-  }
-
-
   const binding =
     userBindings.find(
       function(item) {
@@ -3239,12 +3137,6 @@ async function submitMakeup() {
     );
 
 
-  const remark =
-    slot === "其他"
-      ? "其他：" + other
-      : slot;
-
-
   submittingState.makeup =
     true;
 
@@ -3255,10 +3147,11 @@ async function submitMakeup() {
     );
 
 
-  if (button) {
-    button.disabled = true;
-    button.textContent = "送出中...";
-  }
+  button.disabled =
+    true;
+
+  button.textContent =
+    "送出中...";
 
 
   try {
@@ -3279,10 +3172,7 @@ async function submitMakeup() {
           originalDate,
 
         date:
-          date,
-
-        remark:
-          remark
+          date
 
       }
     );
@@ -3293,20 +3183,12 @@ async function submitMakeup() {
     );
 
 
-    const makeupDateEl = document.getElementById("makeup-date");
-    if (makeupDateEl) makeupDateEl.value = todayString();
-
-
-    const makeupSlotEl = document.getElementById("makeup-slot-select");
-    if (makeupSlotEl) makeupSlotEl.value = "";
-
-
-    const makeupOtherEl = document.getElementById("makeup-other-input");
-    if (makeupOtherEl) makeupOtherEl.value = "";
-
-
-    const makeupGroupEl = document.getElementById("makeup-other-group");
-    if (makeupGroupEl) makeupGroupEl.classList.add("hidden");
+    document
+      .getElementById(
+        "makeup-date"
+      )
+      .value =
+      todayString();
 
 
     await loadValidLeaveDates();
@@ -3343,10 +3225,11 @@ async function submitMakeup() {
     submittingState.makeup =
       false;
 
-    if (button) {
-      button.disabled = false;
-      button.textContent = "送出補課預約";
-    }
+    button.disabled =
+      false;
+
+    button.textContent =
+      "送出補課預約";
   }
 }
 
@@ -3364,7 +3247,7 @@ async function deleteLeave(
       .getElementById(
         "student-select"
       )
-      ?.value;
+      .value;
 
 
   if (
