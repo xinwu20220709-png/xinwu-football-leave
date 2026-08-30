@@ -1059,222 +1059,45 @@ window.addEventListener(
 // 呼叫 GAS
 // ================================================================
 
-function sendGasApiRequest(
-  action,
-  payload
-) {
+// ================================================================
+// 改用 Fetch API 直接呼叫 GAS，徹底解決 X-Frame-Options 攔截問題
+// ================================================================
+function sendGasApiRequest(action, payload) {
+  return new Promise(function(resolve, reject) {
+    const bodyData = Object.assign(
+      {},
+      payload || {},
+      { action: action }
+    );
 
-  return new Promise(
-    function(resolve, reject) {
-
-      const requestId =
-        "req_" +
-        Date.now().toString(36) +
-        "_" +
-        Math.random()
-          .toString(36)
-          .slice(2);
-
-
-      const iframe =
-        document.createElement(
-          "iframe"
-        );
-
-
-      iframe.name =
-        requestId;
-
-      iframe.style.display =
-        "none";
-
-      iframe.setAttribute(
-        "aria-hidden",
-        "true"
-      );
-
-
-      document.body.appendChild(
-        iframe
-      );
-
-
-      const form =
-        document.createElement(
-          "form"
-        );
-
-
-      form.method =
-        "POST";
-
-      form.action =
-        GAS_API_URL;
-
-      form.target =
-        requestId;
-
-      form.style.display =
-        "none";
-
-
-      const requestIdInput =
-        document.createElement(
-          "input"
-        );
-
-
-      requestIdInput.type =
-        "hidden";
-
-      requestIdInput.name =
-        "requestId";
-
-      requestIdInput.value =
-        requestId;
-
-
-      const payloadInput =
-        document.createElement(
-          "input"
-        );
-
-
-      payloadInput.type =
-        "hidden";
-
-      payloadInput.name =
-        "payload";
-
-      payloadInput.value =
-        JSON.stringify(
-          Object.assign(
-            {},
-            payload || {},
-            {
-              action:
-                action
-            }
-          )
-        );
-
-
-      form.appendChild(
-        requestIdInput
-      );
-
-      form.appendChild(
-        payloadInput
-      );
-
-
-      document.body.appendChild(
-        form
-      );
-
-
-      const timer =
-        setTimeout(
-          function() {
-
-            const pending =
-              pendingApiRequests.get(
-                requestId
-              );
-
-
-            if (!pending) {
-              return;
-            }
-
-
-            pendingApiRequests.delete(
-              requestId
-            );
-
-
-            if (
-              iframe.parentNode
-            ) {
-
-              iframe.parentNode.removeChild(
-                iframe
-              );
-            }
-
-
-            reject(
-              new Error(
-                "伺服器回應逾時，請確認 GAS Web App 已重新部署。"
-              )
-            );
-
-          },
-          30000
-        );
-
-
-      pendingApiRequests.set(
-        requestId,
-        {
-          resolve:
-            resolve,
-
-          reject:
-            reject,
-
-          iframe:
-            iframe,
-
-          timer:
-            timer
-        }
-      );
-
-
+    // 使用 no-cors 或標準 fetch (GAS 接受 POST text/plain 或 application/json)
+    fetch(GAS_API_URL, {
+      method: "POST",
+      // 不設定會引起 CORS preflight 複雜驗證的標頭，直接送字串
+      body: JSON.stringify(bodyData)
+    })
+    .then(function(response) {
+      return response.text();
+    })
+    .then(function(text) {
       try {
-
-        form.submit();
-
-      } catch (error) {
-
-        pendingApiRequests.delete(
-          requestId
-        );
-
-        clearTimeout(
-          timer
-        );
-
-
-        if (
-          iframe.parentNode
-        ) {
-
-          iframe.parentNode.removeChild(
-            iframe
-          );
+        const json = JSON.parse(text);
+        if (json.ok) {
+          resolve(json.data);
+        } else {
+          reject(new Error(json.error || "GAS 執行發生錯誤。"));
         }
-
-
-        reject(
-          error
-        );
+      } catch (e) {
+        reject(new Error("伺服器回傳格式不正確：" + text));
       }
-
-
-      if (
-        form.parentNode
-      ) {
-
-        form.parentNode.removeChild(
-          form
-        );
-      }
-
-    }
-  );
+    })
+    .catch(function(error) {
+      reject(new Error("網路連線失敗或伺服器逾時：" + (error.message || error)));
+    });
+  });
 }
+
+// 移除原本複雜的 iframe message 監聽（保留空陣列或直接刪除舊的 message event listener）
 
 
 // ================================================================
