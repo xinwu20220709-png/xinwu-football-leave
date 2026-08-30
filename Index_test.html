@@ -860,7 +860,7 @@ const LIFF_ID =
 
 
 const GAS_API_URL =
-  "https://script.google.com/macros/s/AKfycbxry9IgBlpcQVvZ1wMrQjWVfHtEeyb7AbZ0hiaJCvQcEUFGhWzrTf_EVzfUf3b8LmBX/exec";
+  "https://script.google.com/macros/s/AKfycbxNojpmuM5G-pTzp2nm2RCG0Af3nY2x3kRUUJbsGAPDfJs2HIKbYDb1G8mi0chfC-8I/exec";
 
 
 const GAS_API_CHANNEL =
@@ -2589,7 +2589,7 @@ function normalizeHistoryResult(
 
 
 // ================================================================
-// 顯示歷史 (已修正補課紀錄日期綁定)
+// 顯示歷史 (已支援補課紀錄刪除/取消預約)
 // ================================================================
 
 function renderHistory(
@@ -2635,39 +2635,46 @@ function renderHistory(
         displayDate = item.date || "";
         info = "原因：" + escapeHtml(item.reason || "無");
       } else {
-        // ⭐ 修正：補課紀錄的大標題日期顯示為預約補課日期 (item.date)，下方顯示原請假日期
         displayDate = item.date || "";
         info = "原請假日期：" + escapeHtml(item.originalDate || "未指定");
       }
 
-      const canDelete =
+      // 判斷是否可刪除：請假分頁中若為「已請假」或「已核准」可刪除；補課分頁中若狀態為「已預約」可取消
+      const canDeleteLeave =
         currentTab === "leave" &&
         (
-          item.status ===
-            "已請假" ||
-
-          item.status ===
-            "已核准"
+          item.status === "已請假" ||
+          item.status === "已核准"
         );
 
+      const canCancelMakeup =
+        currentTab === "makeup" &&
+        item.status === "已預約";
 
-      let deleteButton =
-        "";
+      let actionButton = "";
 
-
-      if (
-        canDelete
-      ) {
-
-        deleteButton =
+      if (canDeleteLeave) {
+        actionButton =
           "<button " +
           "class='delete-leave-button' " +
           "onclick='deleteLeave(" +
-          JSON.stringify(
-            item.date || ""
-          ) +
+          JSON.stringify(item.date || "") +
           ")'>" +
           "刪除" +
+          "</button>";
+      } else if (canCancelMakeup) {
+        // 帶入 rowNumber, originalDate, date 與 studentName 進行取消預約
+        const studentName = document.getElementById("student-select").value;
+        actionButton =
+          "<button " +
+          "class='delete-leave-button' " +
+          "onclick='cancelMakeup(" +
+          JSON.stringify(item.rowNumber || "") + ", " +
+          JSON.stringify(item.originalDate || "") + ", " +
+          JSON.stringify(item.date || "") + ", " +
+          JSON.stringify(studentName) +
+          ")'>" +
+          "取消預約" +
           "</button>";
       }
 
@@ -2701,7 +2708,7 @@ function renderHistory(
 
         "</div>" +
 
-        deleteButton +
+        actionButton +
 
         "</div>" +
 
@@ -3301,6 +3308,43 @@ async function deleteLeave(
         error
       )
     );
+  }
+}
+
+
+// ================================================================
+// 取消預約補課
+// ================================================================
+
+async function cancelMakeup(rowNumber, originalDate, makeupDate, studentName) {
+  if (!confirm("確定要取消這筆預約補課嗎？\n取消後原請假紀錄將恢復為「已請假」狀態。")) {
+    return;
+  }
+
+  try {
+    await callGasApi(
+      "cancelMakeupRecord",
+      {
+        studentName: studentName,
+        rowNumber: rowNumber,
+        originalDate: originalDate,
+        date: makeupDate
+      }
+    );
+
+    alert("已成功取消預約補課！");
+
+    // 重新載入補課歷史與可用的請假日期
+    await loadHistory();
+    await loadValidLeaveDates();
+
+  } catch (error) {
+    if (isExpiredTokenError(error)) {
+      await forceLineLogin(error);
+      return;
+    }
+
+    alert("取消失敗：" + (error.message || error));
   }
 }
 
