@@ -1000,9 +1000,6 @@ window.addEventListener(
 // 呼叫 GAS
 // ================================================================
 
-// ================================================================
-// 改用 Fetch API 直接呼叫 GAS，徹底解決 X-Frame-Options 攔截問題
-// ================================================================
 function sendGasApiRequest(action, payload) {
   return new Promise(function(resolve, reject) {
     const bodyData = Object.assign(
@@ -1011,10 +1008,8 @@ function sendGasApiRequest(action, payload) {
       { action: action }
     );
 
-    // 使用 no-cors 或標準 fetch (GAS 接受 POST text/plain 或 application/json)
     fetch(GAS_API_URL, {
       method: "POST",
-      // 不設定會引起 CORS preflight 複雜驗證的標頭，直接送字串
       body: JSON.stringify(bodyData)
     })
     .then(function(response) {
@@ -1037,8 +1032,6 @@ function sendGasApiRequest(action, payload) {
     });
   });
 }
-
-// 移除原本複雜的 iframe message 監聽（保留空陣列或直接刪除舊的 message event listener）
 
 
 // ================================================================
@@ -1352,8 +1345,6 @@ async function getCurrentLineIdToken() {
 
 // ================================================================
 // API wrapper
-//
-// 每一次 API 都重新取得 token。
 // ================================================================
 
 async function callGasApi(
@@ -1434,16 +1425,6 @@ async function initSystem() {
   try {
 
     await ensureLiffInitialized();
-
-
-    console.log(
-      "LIFF",
-      liff.getVersion(),
-      "inClient",
-      liff.isInClient(),
-      "loggedIn",
-      liff.isLoggedIn()
-    );
 
 
     if (
@@ -1946,10 +1927,6 @@ async function handleBind() {
     );
 
 
-    // ------------------------------------------------------------
-    // 重新從伺服器取得完整綁定
-    // ------------------------------------------------------------
-
     userBindings =
       await callGasApi(
         "checkLineId",
@@ -2319,10 +2296,6 @@ async function handleAddMember() {
       );
 
 
-    // ------------------------------------------------------------
-    // 從伺服器重新取得
-    // ------------------------------------------------------------
-
     userBindings =
       await callGasApi(
         "checkLineId",
@@ -2616,7 +2589,7 @@ function normalizeHistoryResult(
 
 
 // ================================================================
-// 顯示歷史
+// 顯示歷史 (已修正補課紀錄日期綁定)
 // ================================================================
 
 function renderHistory(
@@ -2655,26 +2628,17 @@ function renderHistory(
   history.forEach(
     function(item) {
 
-      const info =
-        currentTab === "leave"
+      let displayDate = "";
+      let info = "";
 
-          ? "原因：" +
-            escapeHtml(
-              item.reason ||
-              "無"
-            )
-
-          : "原請假日期：" +
-            escapeHtml(
-              item.originalDate ||
-              "未指定"
-            ) +
-            " | 備註：" +
-            escapeHtml(
-              item.remark ||
-              ""
-            );
-
+      if (currentTab === "leave") {
+        displayDate = item.date || "";
+        info = "原因：" + escapeHtml(item.reason || "無");
+      } else {
+        // ⭐ 修正：補課紀錄的大標題日期顯示為預約補課日期 (item.date)，下方顯示原請假日期
+        displayDate = item.date || "";
+        info = "原請假日期：" + escapeHtml(item.originalDate || "未指定");
+      }
 
       const canDelete =
         currentTab === "leave" &&
@@ -2718,10 +2682,7 @@ function renderHistory(
 
         "<b>日期：" +
 
-        escapeHtml(
-          item.date ||
-          ""
-        ) +
+        escapeHtml(displayDate) +
 
         "</b> | 狀態：" +
 
@@ -2867,7 +2828,6 @@ async function loadValidLeaveDates() {
           ) +
           "）";
 
-        // 【修改重點 1】將後端傳來的 rowNumber 綁定到 option 的 dataset 屬性中
         option.dataset.rowNumber = leave.rowNumber !== undefined ? leave.rowNumber : '';
 
 
@@ -3129,7 +3089,6 @@ async function submitMakeup() {
   }
 
 
-  // 【修改重點 2】透過 selectedOptions 取得當前被選中的 option 元素，並讀取其 dataset.rowNumber
   let rowNumber = '';
   if (originalDateSelect.selectedOptions.length > 0) {
     rowNumber = originalDateSelect.selectedOptions[0].dataset.rowNumber || '';
@@ -3186,7 +3145,7 @@ async function submitMakeup() {
           date,
 
         rowNumber:
-          rowNumber // 【修改重點 3】將抓到的 rowNumber 傳遞給後端 API
+          rowNumber
 
       }
     );
