@@ -2666,7 +2666,6 @@ function renderHistory(
         // 取得當前選擇的學員姓名
         const studentName = document.getElementById("student-select").value;
         
-        // 👉 改用更安全的寫法，將參數包裝成物件或清楚傳遞
         actionButton =
           "<button " +
           "class='delete-leave-button' " +
@@ -2679,8 +2678,6 @@ function renderHistory(
           "取消預約" +
           "</button>";
       }
-      }
-
 
       html +=
 
