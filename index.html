@@ -1029,7 +1029,7 @@ const LIFF_ID =
 
 
 const GAS_API_URL =
-  "https://script.google.com/macros/s/AKfycbxRQK6cInSGTJn5AhiDMH7zXSiF06y3TmXJKNndvh2pYAvKN0hZvfP2ieBnNDaoAkph/exec";
+  "https://script.google.com/macros/s/AKfycby30d0ARr4VGTBRhLk8rLAd_0pNcdC6ynCt45XWkR-EvL2Ik2RW4aOsKuCawYf97Gur/exec";
 
 
 const GAS_API_CHANNEL =
@@ -2483,11 +2483,17 @@ async function handleAddMember() {
       );
 
 
-    userBindings =
-      await callGasApi(
-        "checkLineId",
-        {}
-      );
+    // registerUser 已經完成「檢查 + 寫入」。
+    // 不再立刻重複呼叫 checkLineId，避免多一次 GAS 往返。
+    if (
+      result &&
+      !result.alreadyBound
+    ) {
+      userBindings.push({
+        studentName: name,
+        relation: relation
+      });
+    }
 
 
     updateMemberSelect();
