@@ -1984,9 +1984,7 @@ function showMainSection() {
       "hidden"
     );
 
-
   updateMemberSelect();
-
 
   document
     .getElementById(
@@ -1995,11 +1993,31 @@ function showMainSection() {
     .innerText =
       "👋 您好，系統已自動確認您的 LINE 身分。";
 
-
   setDefaultDates();
 
+  const historyList =
+    document.getElementById(
+      "history-list"
+    );
 
-  onStudentChange();
+  if (historyList) {
+
+    historyList.innerHTML =
+      "<div style='color:#64748b;text-align:center;padding:10px'>" +
+      "正在載入紀錄..." +
+      "</div>";
+
+  }
+
+  // 先讓畫面顯示
+  setTimeout(
+    function () {
+
+      onStudentChange();
+
+    },
+    50
+  );
 }
 
 
