@@ -18,9 +18,28 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
+    :root {
+      --navy: #0f2742;
+      --navy-2: #173b5f;
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --green: #16a34a;
+      --green-soft: #f0fdf4;
+      --red: #dc2626;
+      --red-soft: #fef2f2;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #dbe4ee;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+    }
 
     * {
       box-sizing: border-box;
+    }
+
+    html {
+      background: #eef3f8;
     }
 
     body {
@@ -29,146 +48,148 @@
         BlinkMacSystemFont,
         "Segoe UI",
         Roboto,
+        "Noto Sans TC",
         sans-serif;
-
-      background: #f8fafc;
-
+      background:
+        radial-gradient(circle at 50% -10%, #dbeafe 0, #eef3f8 38%, #eef3f8 100%);
       margin: 0;
-
-      padding: 16px;
-
-      color: #1e293b;
+      padding: 22px 14px 40px;
+      color: var(--text);
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 500px;
-
+      max-width: 520px;
       margin: 0 auto;
-
-      background: #fff;
-
-      padding: 24px;
-
-      border-radius: 16px;
-
+      background: rgba(255,255,255,.97);
+      padding: 26px 22px 28px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.9);
       box-shadow:
-        0 4px 20px rgba(0,0,0,.06);
+        0 18px 50px rgba(15,39,66,.10),
+        0 3px 12px rgba(15,39,66,.06);
     }
 
     h2 {
-      color: #4f46e5;
-
+      color: var(--navy);
       text-align: center;
-
-      margin:
-        0 0 20px;
-
-      font-size: 22px;
+      margin: 2px 0 22px;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: .02em;
     }
 
     .tabs {
       display: flex;
-
-      margin-bottom: 20px;
-
-      border-bottom:
-        2px solid #e2e8f0;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+      gap: 4px;
     }
 
     .tab {
       flex: 1;
-
       text-align: center;
-
-      padding: 10px;
-
+      padding: 11px 10px 13px;
       cursor: pointer;
-
-      font-weight: bold;
-
-      color: #64748b;
-
+      font-weight: 700;
+      color: #94a3b8;
       font-size: 15px;
+      transition: .2s ease;
+      position: relative;
     }
 
     .tab.active {
-      color: #4f46e5;
+      color: var(--blue);
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
 
-      border-bottom:
-        3px solid #4f46e5;
-
-      margin-bottom: -2px;
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      left: 18%;
+      right: 18%;
+      bottom: -1px;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--blue);
     }
 
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     label {
       display: block;
-
-      font-weight: 600;
-
-      margin-bottom: 6px;
-
+      font-weight: 700;
+      margin-bottom: 7px;
       font-size: 14px;
-
-      color: #475569;
+      color: #334155;
     }
 
     input,
     select,
     textarea {
-
       width: 100%;
-
-      padding: 10px 12px;
-
-      border:
-        1px solid #cbd5e1;
-
-      border-radius: 8px;
-
+      padding: 12px 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 11px;
       font-size: 15px;
-
       background: #fff;
+      color: var(--text);
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    input:hover,
+    select:hover,
+    textarea:hover {
+      border-color: #94a3b8;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+      background: #fcfdff;
     }
 
     textarea {
       resize: vertical;
+      min-height: 74px;
     }
 
     button {
-
       width: 100%;
-
-      background: #4f46e5;
-
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: #fff;
-
       border: none;
-
-      padding: 12px;
-
-      border-radius: 8px;
-
+      padding: 13px 14px;
+      border-radius: 11px;
       font-size: 16px;
-
-      font-weight: bold;
-
+      font-weight: 800;
       cursor: pointer;
-
       margin-top: 8px;
+      box-shadow: 0 5px 14px rgba(37,99,235,.18);
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
     }
 
     button:hover {
-      background: #4338ca;
+      filter: brightness(.97);
+      box-shadow: 0 7px 18px rgba(37,99,235,.22);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     button:disabled {
-      opacity: .6;
-
+      opacity: .55;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
     .hidden {
@@ -176,130 +197,98 @@
     }
 
     .notice {
-
-      background: #eef2ff;
-
-      border-left:
-        4px solid #4f46e5;
-
-      padding: 12px;
-
+      background: var(--blue-soft);
+      border: 1px solid #bfdbfe;
+      border-left: 4px solid var(--blue);
+      padding: 12px 13px;
       font-size: 13px;
-
-      margin-bottom: 16px;
-
-      border-radius: 4px;
-
-      color: #3730a3;
-
-      line-height: 1.5;
+      margin-bottom: 18px;
+      border-radius: 10px;
+      color: #1e40af;
+      line-height: 1.6;
     }
 
     .member-header {
-
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
       gap: 10px;
-
-      margin-bottom: 6px;
+      margin-bottom: 7px;
     }
 
     .member-header-left {
-
       display: flex;
-
       align-items: center;
-
       gap: 8px;
     }
 
     .member-header-left label {
       margin: 0;
-
       font-size: 15px;
-
       color: #334155;
     }
 
     .member-count {
-
-      color: #64748b;
-
+      color: var(--muted);
       font-size: 13px;
+      white-space: nowrap;
+    }
 
+    .add-member-button,
+    .manage-member-button {
+      width: auto;
+      margin: 0;
+      padding: 7px 12px;
+      border-radius: 9px;
+      font-size: 13px;
+      box-shadow: none;
       white-space: nowrap;
     }
 
     .add-member-button {
-
-      width: auto;
-
-      margin: 0;
-
-      padding: 6px 12px;
-
-      border-radius: 7px;
-
-      background: #10b981;
-
-      font-size: 13px;
+      background: var(--green);
     }
 
     .add-member-button:hover {
-      background: #059669;
-    }
-
-    .add-member-box {
-
-      background: #f0fdf4;
-
-      border:
-        1px solid #bbf7d0;
-
-      border-radius: 10px;
-
-      padding: 14px;
-
-      margin-bottom: 18px;
+      background: #15803d;
     }
 
     .manage-member-button {
-      width: auto;
-      margin: 0;
-      padding: 6px 12px;
-      border-radius: 7px;
-      background: #64748b;
-      font-size: 13px;
+      background: var(--navy-2);
     }
 
     .manage-member-button:hover {
-      background: #475569;
+      background: var(--navy);
+    }
+
+    .add-member-box {
+      background: var(--green-soft);
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 18px;
     }
 
     .member-manager-box {
       background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 12px;
       margin-bottom: 18px;
     }
 
     .member-manager-title {
-      font-weight: bold;
-      color: #334155;
-      margin-bottom: 10px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
     }
 
     .member-manager-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px;
-      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 2px;
+      border-bottom: 1px solid #e5e7eb;
     }
 
     .member-manager-item:last-child {
@@ -309,159 +298,132 @@
     .member-delete-button {
       width: auto;
       margin: 0;
-      padding: 6px 12px;
-      background: #ef4444;
-      border-radius: 7px;
+      padding: 6px 11px;
+      background: var(--red);
+      border-radius: 8px;
       font-size: 13px;
+      box-shadow: none;
     }
 
     .member-delete-button:hover {
-      background: #dc2626;
+      background: #b91c1c;
     }
 
     .add-member-title {
-
       font-size: 15px;
-
-      font-weight: bold;
-
+      font-weight: 800;
       color: #166534;
-
       margin-bottom: 12px;
     }
 
     .add-member-actions {
-
       display: flex;
-
       gap: 8px;
     }
 
     .add-member-actions button {
-
       flex: 1;
-
       margin-top: 0;
     }
 
     .cancel-button {
-
       background: #e2e8f0;
-
       color: #475569;
+      box-shadow: none;
     }
 
     .cancel-button:hover {
       background: #cbd5e1;
+      color: #334155;
     }
 
     .confirm-add-button {
-      background: #10b981;
+      background: var(--green);
     }
 
     .confirm-add-button:hover {
-      background: #059669;
+      background: #15803d;
     }
 
     .history-card {
-
-      background: #f8fafc;
-
-      border:
-        1px solid #e2e8f0;
-
-      padding: 12px;
-
-      border-radius: 8px;
-
-      margin-bottom: 8px;
-
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      padding: 13px;
+      border-radius: 11px;
+      margin-bottom: 9px;
       font-size: 13px;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .history-card:hover {
+      border-color: #c7d2fe;
+      box-shadow: 0 4px 12px rgba(15,39,66,.05);
     }
 
     .history-row {
-
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
       gap: 10px;
     }
 
     .history-content {
-
       flex: 1;
-
       min-width: 0;
-
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     .delete-leave-button {
-
       width: auto;
-
       flex: 0 0 auto;
-
       margin: 0;
-
-      padding: 5px 9px;
-
-      border-radius: 6px;
-
-      background: #ef4444;
-
+      padding: 6px 9px;
+      border-radius: 7px;
+      background: var(--red);
       font-size: 12px;
+      box-shadow: none;
     }
 
     .delete-leave-button:hover {
-      background: #dc2626;
+      background: #b91c1c;
     }
 
     .error-box {
-
-      background: #fef2f2;
-
-      border-left:
-        4px solid #ef4444;
-
+      background: var(--red-soft);
+      border: 1px solid #fecaca;
+      border-left: 4px solid #ef4444;
       padding: 12px;
-
       font-size: 13px;
-
       margin-top: 12px;
-
-      border-radius: 4px;
-
+      border-radius: 9px;
       color: #991b1b;
-
-      line-height: 1.5;
-
-      word-break: break-word;
+      line-height: 1.55;
     }
 
-    .login-button {
-      background: #06c755;
+    /* 讓系統在手機上更精緻 */
+    @media (max-width: 560px) {
+      body {
+        padding: 10px 8px 28px;
+      }
 
-      margin-top: 12px;
+      .container {
+        padding: 22px 16px 24px;
+        border-radius: 20px;
+      }
+
+      h2 {
+        font-size: 21px;
+      }
+
+      .member-header {
+        align-items: flex-start;
+      }
+
+      .add-member-button,
+      .manage-member-button {
+        padding: 7px 10px;
+      }
     }
-
-    .login-button:hover {
-      background: #05b34d;
-    }
-
-    hr {
-
-      margin: 20px 0;
-
-      border: 0;
-
-      border-top:
-        1px solid #e2e8f0;
-    }
-
   </style>
 
 </head>
