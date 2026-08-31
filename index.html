@@ -592,13 +592,25 @@
         </div>
 
 
-        <button
-          type="button"
-          class="add-member-button"
-          onclick="showAddMember()"
-        >
-          ＋新增
-        </button>
+<div style="display:flex;gap:8px;">
+
+  <button
+    type="button"
+    class="add-member-button"
+    onclick="showAddMember()"
+  >
+    ＋新增
+  </button>
+
+  <button
+    type="button"
+    class="manage-member-button"
+    onclick="toggleMemberManager()"
+  >
+    👥管理
+  </button>
+
+</div>
 
       </div>
 
@@ -607,6 +619,57 @@
         id="student-select"
         onchange="onStudentChange()"
       ></select>
+      .manage-member-button {
+  width: auto;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 7px;
+  background: #64748b;
+  font-size: 13px;
+}
+
+.manage-member-button:hover {
+  background: #475569;
+}
+
+.member-manager-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.member-manager-title {
+  font-weight: bold;
+  color: #334155;
+  margin-bottom: 10px;
+}
+
+.member-manager-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.member-manager-item:last-child {
+  border-bottom: none;
+}
+
+.member-delete-button {
+  width: auto;
+  margin: 0;
+  padding: 6px 12px;
+  background: #ef4444;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.member-delete-button:hover {
+  background: #dc2626;
+}
 
     </div>
 
@@ -2369,6 +2432,74 @@ async function handleAddMember() {
   }
 }
 
+// ================================================================
+// 刪除成員
+// ================================================================
+ async function deleteMember(studentName) {
+
+  studentName =
+    decodeURIComponent(
+      studentName
+    );
+
+  if (
+    userBindings.length <= 1
+  ) {
+
+    alert(
+      "至少需保留一位成員"
+    );
+
+    return;
+  }
+
+  if (
+    !confirm(
+      "確定刪除【" +
+      studentName +
+      "】？"
+    )
+  ) {
+    return;
+  }
+
+  try {
+
+    await callGasApi(
+      "deleteMember",
+      {
+        studentName
+      }
+    );
+
+    userBindings =
+      await callGasApi(
+        "checkLineId",
+        {}
+      );
+
+    updateMemberSelect();
+
+    renderMemberManager();
+
+    onStudentChange();
+
+    alert(
+      "刪除成功"
+    );
+
+  } catch (error) {
+
+    alert(
+      "刪除失敗：" +
+      (
+        error.message ||
+        error
+      )
+    );
+  }
+}
+ 
 
 // ================================================================
 // 成員切換
@@ -3407,6 +3538,69 @@ function onCheckBindResult(
 
     showMainSection();
   }
+}
+
+  function toggleMemberManager() {
+
+  const box =
+    document.getElementById(
+      "member-manager-box"
+    );
+
+  box.classList.toggle(
+    "hidden"
+  );
+
+  if (
+    !box.classList.contains(
+      "hidden"
+    )
+  ) {
+    renderMemberManager();
+  }
+}
+
+  function renderMemberManager() {
+
+  const container =
+    document.getElementById(
+      "member-manager-list"
+    );
+
+  if (!userBindings.length) {
+
+    container.innerHTML =
+      "沒有任何成員";
+
+    return;
+  }
+
+  let html = "";
+
+  userBindings.forEach(function(member) {
+
+    html +=
+      `
+      <div class="member-manager-item">
+
+        <div>
+          👦
+          ${escapeHtml(member.studentName)}
+          （${escapeHtml(member.relation)}）
+        </div>
+
+        <button
+          class="member-delete-button"
+          onclick="deleteMember('${encodeURIComponent(member.studentName)}')"
+        >
+          🗑️
+        </button>
+
+      </div>
+      `;
+  });
+
+  container.innerHTML = html;
 }
 
 </script>
