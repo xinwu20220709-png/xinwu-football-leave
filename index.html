@@ -261,6 +261,31 @@
       background: var(--navy);
     }
 
+    /* ============================================================
+       成員管理：精緻化圖示與刪除按鈕
+       ============================================================ */
+    .manage-member-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .manage-member-icon {
+      width: 17px;
+      height: 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 17px;
+    }
+
+    .manage-member-icon svg {
+      width: 17px;
+      height: 17px;
+      display: block;
+    }
+
     .add-member-box {
       background: var(--green-soft);
       border: 1px solid #bbf7d0;
@@ -270,43 +295,110 @@
     }
 
     .member-manager-box {
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
+      background: linear-gradient(180deg, #f8fbff 0%, #f4f8fc 100%);
+      border: 1px solid #d7e2ef;
+      border-radius: 14px;
+      padding: 13px;
       margin-bottom: 18px;
+      box-shadow: 0 4px 14px rgba(15,39,66,.045);
     }
 
     .member-manager-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-weight: 800;
       color: var(--navy);
       margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .member-manager-title-icon {
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      background: #e6f0ff;
+      color: var(--blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 31px;
+    }
+
+    .member-manager-title-icon svg {
+      width: 18px;
+      height: 18px;
     }
 
     .member-manager-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 2px;
-      border-bottom: 1px solid #e5e7eb;
+      gap: 10px;
+      padding: 9px 2px;
+      border-bottom: 1px solid #e2e8f0;
     }
 
     .member-manager-item:last-child {
       border-bottom: none;
     }
 
+    .member-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      line-height: 1.45;
+      font-size: 14px;
+      color: #1e293b;
+    }
+
+    .member-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #e6f0ff;
+      color: var(--blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 34px;
+    }
+
+    .member-avatar svg {
+      width: 19px;
+      height: 19px;
+    }
+
     .member-delete-button {
-      width: auto;
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
       margin: 0;
-      padding: 6px 11px;
-      background: var(--red);
-      border-radius: 8px;
-      font-size: 13px;
+      padding: 0;
+      background: #fff;
+      color: #ef4444;
+      border: 1.5px solid #fda4af;
+      border-radius: 10px;
+      font-size: 0;
       box-shadow: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 38px;
     }
 
     .member-delete-button:hover {
-      background: #b91c1c;
+      background: #fff5f5;
+      color: #dc2626;
+      border-color: #f87171;
+      box-shadow: 0 3px 9px rgba(220,38,38,.10);
+      transform: translateY(-1px);
+    }
+
+    .member-delete-button svg {
+      width: 18px;
+      height: 18px;
     }
 
     .add-member-title {
@@ -422,6 +514,24 @@
       .add-member-button,
       .manage-member-button {
         padding: 7px 10px;
+      }
+
+      .manage-member-icon {
+        width: 16px;
+        height: 16px;
+        flex-basis: 16px;
+      }
+
+      .manage-member-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .member-delete-button {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        flex-basis: 36px;
       }
     }
   </style>
@@ -621,7 +731,15 @@
             class="manage-member-button"
             onclick="toggleMemberManager()"
           >
-            👥管理
+            <span class="manage-member-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="8" r="3"></circle>
+                <path d="M3.5 20c.6-3.1 2.4-5 5.5-5s4.9 1.9 5.5 5"></path>
+                <path d="M16 11a3 3 0 1 0 0-6"></path>
+                <path d="M17 15c2.1.4 3.4 2 4 5"></path>
+              </svg>
+            </span>
+            管理
           </button>
 
         </div>
@@ -646,7 +764,15 @@
       class="member-manager-box hidden"
     >
       <div class="member-manager-title">
-        👥 成員管理
+        <span class="member-manager-title-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="8" r="3"></circle>
+            <path d="M3.5 20c.6-3.1 2.4-5 5.5-5s4.9 1.9 5.5 5"></path>
+            <path d="M16 11a3 3 0 1 0 0-6"></path>
+            <path d="M17 15c2.1.4 3.4 2 4 5"></path>
+          </svg>
+        </span>
+        成員管理
       </div>
       <div id="member-manager-list">
         <!-- 這裡會由 JS 動態填入成員列表 -->
@@ -903,7 +1029,7 @@ const LIFF_ID =
 
 
 const GAS_API_URL =
-  "https://script.google.com/macros/s/AKfycbxaEePuLmBGfm5kQXk4qN-EoljyfozbZOi3zKPNeDQQdhbziQN3FubiHXIUYsFHERAw/exec";
+  "https://script.google.com/macros/s/AKfycbz8TdFPRaKbB3HMhXDODVd5rATBFUOJsBhaJZTeIye7u-Qk92s87LAg2ndog7b_QjgW/exec";
 
 
 const GAS_API_CHANNEL =
@@ -3560,17 +3686,33 @@ function renderMemberManager() {
       `
       <div class="member-manager-item">
 
-        <div>
-          👦
-          ${escapeHtml(member.studentName)}
-          （${escapeHtml(member.relation)}）
+        <div class="member-info">
+          <span class="member-avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="3.2"></circle>
+              <path d="M5.5 20c.7-3.7 2.9-5.7 6.5-5.7s5.8 2 6.5 5.7"></path>
+            </svg>
+          </span>
+          <span>
+            ${escapeHtml(member.studentName)}
+            （${escapeHtml(member.relation)}）
+          </span>
         </div>
 
         <button
+          type="button"
           class="member-delete-button"
+          aria-label="刪除 ${escapeHtml(member.studentName)}"
+          title="刪除成員"
           onclick="deleteMember('${encodeURIComponent(member.studentName)}')"
         >
-          🗑️
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 7h16"></path>
+            <path d="M9 7V4h6v3"></path>
+            <path d="M7 7l1 13h8l1-13"></path>
+            <path d="M10 11v5"></path>
+            <path d="M14 11v5"></path>
+          </svg>
         </button>
 
       </div>
