@@ -2657,7 +2657,7 @@ function renderHistory(
         info = "原請假日期：" + escapeHtml(item.originalDate || "未指定");
       }
 
-      // 判斷是否可刪除：請假分頁中若為「已請假」或「已核准」可刪除；補課分頁中若狀態為「已預約」可取消
+      // 判斷是否可刪除：請假分頁中若為「已請假」或「已核准」可刪除；補課分頁中若狀態為「已預約補課」可取消
       const canDeleteLeave =
         currentTab === "leave" &&
         (
@@ -2667,7 +2667,7 @@ function renderHistory(
 
       const canCancelMakeup =
         currentTab === "makeup" &&
-        item.status === "已預約";
+        item.status === "已預約補課";
 
       let actionButton = "";
 
