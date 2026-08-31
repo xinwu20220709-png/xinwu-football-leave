@@ -268,56 +268,56 @@
     }
 
     .manage-member-button {
-  width: auto;
-  margin: 0;
-  padding: 6px 12px;
-  border-radius: 7px;
-  background: #64748b;
-  font-size: 13px;
-}
+      width: auto;
+      margin: 0;
+      padding: 6px 12px;
+      border-radius: 7px;
+      background: #64748b;
+      font-size: 13px;
+    }
 
-.manage-member-button:hover {
-  background: #475569;
-}
+    .manage-member-button:hover {
+      background: #475569;
+    }
 
-.member-manager-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 12px;
-  margin-top: 12px;
-}
+    .member-manager-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 18px;
+    }
 
-.member-manager-title {
-  font-weight: bold;
-  color: #334155;
-  margin-bottom: 10px;
-}
+    .member-manager-title {
+      font-weight: bold;
+      color: #334155;
+      margin-bottom: 10px;
+    }
 
-.member-manager-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #e2e8f0;
-}
+    .member-manager-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
 
-.member-manager-item:last-child {
-  border-bottom: none;
-}
+    .member-manager-item:last-child {
+      border-bottom: none;
+    }
 
-.member-delete-button {
-  width: auto;
-  margin: 0;
-  padding: 6px 12px;
-  background: #ef4444;
-  border-radius: 7px;
-  font-size: 13px;
-}
+    .member-delete-button {
+      width: auto;
+      margin: 0;
+      padding: 6px 12px;
+      background: #ef4444;
+      border-radius: 7px;
+      font-size: 13px;
+    }
 
-.member-delete-button:hover {
-  background: #dc2626;
-}
+    .member-delete-button:hover {
+      background: #dc2626;
+    }
 
     .add-member-title {
 
@@ -644,25 +644,25 @@
         </div>
 
 
-<div style="display:flex;gap:8px;">
+        <div style="display:flex;gap:8px;">
 
-  <button
-    type="button"
-    class="add-member-button"
-    onclick="showAddMember()"
-  >
-    ＋新增
-  </button>
+          <button
+            type="button"
+            class="add-member-button"
+            onclick="showAddMember()"
+          >
+            ＋新增
+          </button>
 
-  <button
-    type="button"
-    class="manage-member-button"
-    onclick="toggleMemberManager()"
-  >
-    👥管理
-  </button>
+          <button
+            type="button"
+            class="manage-member-button"
+            onclick="toggleMemberManager()"
+          >
+            👥管理
+          </button>
 
-</div>
+        </div>
 
       </div>
 
@@ -672,6 +672,23 @@
         onchange="onStudentChange()"
       ></select>
       
+    </div>
+
+
+    <!-- ==========================================================
+         管理成員面板 (已修復缺少容器的問題)
+         ========================================================== -->
+
+    <div
+      id="member-manager-box"
+      class="member-manager-box hidden"
+    >
+      <div class="member-manager-title">
+        👥 成員管理
+      </div>
+      <div id="member-manager-list">
+        <!-- 這裡會由 JS 動態填入成員列表 -->
+      </div>
     </div>
 
 
@@ -2436,7 +2453,7 @@ async function handleAddMember() {
 // ================================================================
 // 刪除成員
 // ================================================================
- async function deleteMember(studentName) {
+async function deleteMember(studentName) {
 
   studentName =
     decodeURIComponent(
@@ -2789,7 +2806,6 @@ function renderHistory(
         info = "原請假日期：" + escapeHtml(item.originalDate || "未指定");
       }
 
-      // 判斷是否可刪除：請假分頁中若為「已請假」或「已核准」可刪除；補課分頁中若狀態為「已預約補課」可取消
       const canDeleteLeave =
         currentTab === "leave" &&
         (
@@ -2813,7 +2829,6 @@ function renderHistory(
           "刪除" +
           "</button>";
       } else if (canCancelMakeup) {
-        // 取得當前選擇的學員姓名
         const studentName = document.getElementById("student-select").value;
         
         actionButton =
@@ -3484,7 +3499,6 @@ async function cancelMakeup(rowNumber, originalDate, makeupDate, studentName) {
 
     alert("已成功取消預約補課！");
 
-    // 重新載入補課歷史與可用的請假日期
     await loadHistory();
     await loadValidLeaveDates();
 
@@ -3541,7 +3555,7 @@ function onCheckBindResult(
   }
 }
 
-  function toggleMemberManager() {
+function toggleMemberManager() {
 
   const box =
     document.getElementById(
@@ -3561,7 +3575,7 @@ function onCheckBindResult(
   }
 }
 
-  function renderMemberManager() {
+function renderMemberManager() {
 
   const container =
     document.getElementById(
